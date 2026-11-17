@@ -1,0 +1,1 @@
+main との差分をレビューしてください。docs/review-checklist.md を使って、マージしてよいか判断して。

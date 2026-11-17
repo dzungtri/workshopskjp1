@@ -1,0 +1,1 @@
+specs/001-return-reason/tasks.md の Phase 1〜2 のタスクと、⛔ BLOCKED のタスクを、GitHub MCP で dzungtri/workshopskjp1 に issue として作ってください。タイトルにタスクID、本文に関係する User Story / FR を書いて、BLOCKED のものには needs-PO ラベルを付けて。

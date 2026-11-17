@@ -1,0 +1,1 @@
+src/payment/fake-gateway.js の charge() に、呼び出しログを追加してください。
