@@ -8,7 +8,7 @@
   <div class="row mt" style="gap:30px;align-items:stretch">
     <div class="dbox grow">
       <div class="dkt">terminal</div>
-      <div class="cmd">$ ./demo/reset.sh d1 &amp;&amp; claude</div>
+      <div class="cmd">$ ./demo/go.sh 1   <span style="color:var(--dkmute)"># リセット + コピー + claude</span></div>
       <div class="dkt mt">prompt</div>
       <div class="prompt ja">返品期限（受取から8日）を過ぎても返金されてしまいます。原因を調べて直してください。</div>
     </div>
@@ -19,7 +19,7 @@
   </div>
   <div class="demo-foot ja">⏱ 約6分 · 終わったら次のスライドで中身を説明します</div>
 <aside class="notes">
-<div class="nt-cue">DEMO ① 6分 · 操作: reset.sh d1 → claude → プロンプトをコピペ
+<div class="nt-cue">DEMO ① 6分 · 操作: ./demo/go.sh 1 → ⌘V → Enter
 待ち時間: 画面の tool call を指さして説明</div>
 <div class="nt-jp">では、実際に動かしてみます。
 
@@ -35,7 +35,7 @@
 
 テストが全部通って、tool_use がなくなったので、終わりました。
 今のが Agent Loop です。次のスライドで、中で何が起きていたかを見ます。</div>
-<div class="nt-vi">VN thao tác: (1) cd ec-demo; ./demo/reset.sh d1; claude (2) copy prompt từ slide/RUNBOOK (3) trong lúc chạy, chỉ vào Read/Edit/Bash, test fail → tự sửa (4) nếu chạy lâu: vừa chờ vừa giải thích tool call trên màn hình. Lưu ý: Stop hook sẽ tự chạy npm test khi agent định kết thúc.</div>
+<div class="nt-vi">VN thao tác: (1) cd workshop/ec-demo; ./demo/go.sh 1 (tự reset + copy prompt + mở claude) (2) ⌘V Enter (3) trong lúc chạy, chỉ vào Read/Edit/Bash, test fail → tự sửa (4) nếu chạy lâu: vừa chờ vừa giải thích tool call trên màn hình. Lưu ý: Stop hook sẽ tự chạy npm test khi agent định kết thúc.</div>
 </aside>
 </section>
 
@@ -45,11 +45,11 @@
   <div class="row mt" style="gap:30px;align-items:stretch">
     <div class="dbox grow">
       <div class="dkt">terminal</div>
-      <div class="cmd">$ ./demo/reset.sh d2 &amp;&amp; claude</div>
+      <div class="cmd">$ ./demo/go.sh 2</div>
       <div class="dkt mt">prompt</div>
       <div class="dkt mt">A: 未決定のルール</div>
       <div class="prompt ja" style="font-size:24px">決済が失敗したら、3回までリトライするようにしてください。</div>
-      <div class="dkt mt">B: 保護されたファイル</div>
+      <div class="dkt mt">B: 保護されたファイル <span style="color:var(--c-tool)">($ ./demo/go.sh c 2b)</span></div>
       <div class="prompt ja" style="font-size:24px">src/payment/fake-gateway.js の charge() に、呼び出しログを追加してください。</div>
     </div>
     <div class="dbox" style="width:560px">
@@ -59,7 +59,7 @@
   </div>
   <div class="demo-foot ja">⏱ 約6分 · 最後に <code>.claude/settings.json</code> を見せる</div>
 <aside class="notes">
-<div class="nt-cue">DEMO ② 7分 · 操作: reset.sh d2 → claude → プロンプト → (結果を見る) → settings.json を cat で見せる</div>
+<div class="nt-cue">DEMO ② 6分 · 操作: ./demo/go.sh 2 → ⌘V (2a) → 別ターミナル ./demo/go.sh c 2b → ⌘V → 最後に cat .claude/settings.json</div>
 <div class="nt-jp">次は、ガードレールが止めるところを見ます。お願いを2つします。
 
 Aは「決済が失敗したら、3回までリトライして」。
@@ -84,10 +84,11 @@ Bは「決済のファイルにログを追加して」。決済のフォルダ�
   <h1 class="ja">チケットに分けて、<span class="y">同時に</span>進める</h1>
   <div class="row mt" style="gap:30px;align-items:stretch">
     <div class="dbox grow">
-      <div class="dkt">① plan mode (Shift+Tab)</div>
+      <div class="dkt">① plan mode</div>
+      <div class="cmd" style="font-size:20px">$ ./demo/go.sh 3   <span style="color:var(--dkmute)"># 起動後 Shift+Tab</span></div>
       <div class="prompt ja" style="font-size:24px">返品に「返品理由（不良品 · サイズ違い · その他）」を追加したい。docs/tasks/ticket-template.md の形でチケットに分けて、依存関係も書いて。まだ実装しないで。</div>
       <div class="dkt mt">② 2つの worktree で同時に</div>
-      <div class="cmd" style="font-size:19px">$ ./demo/reset.sh d3   <span style="color:var(--dkmute)"># worktree T1, T2 を作る</span></div>
+      <div class="cmd" style="font-size:20px">$ ./demo/go.sh 3p   <span style="color:var(--dkmute)"># worktree ×2 + Terminal ×2</span></div>
     </div>
     <div class="dbox" style="width:520px">
       <div class="dkt">見るポイント</div>
@@ -96,7 +97,7 @@ Bは「決済のファイルにログを追加して」。決済のフォルダ�
   </div>
   <div class="demo-foot ja">⏱ 約6分</div>
 <aside class="notes">
-<div class="nt-cue">DEMO ③ 6分 · ① plan mode でチケット分解 (2分) → ② reset.sh d3 → ターミナル2つで claude (各チケット) → 1つ終わるまで待たずに次スライドへ戻ってもOK</div>
+<div class="nt-cue">DEMO ③ 6分 · ① ./demo/go.sh 3 → Shift+Tab → ⌘V (2分) → ② ./demo/go.sh 3p (Terminal が2つ開く) → T1 に ⌘V · ./demo/go.sh c 3p2 → T2 に ⌘V → 1つ終わるまで待たずに次スライドへ戻ってもOK</div>
 <div class="nt-jp">では、チケットに分けるところを見ます。
 plan mode にして、「返品理由を追加したい。テンプレートの形でチケットに分けて。まだ実装しないで」とお願いします。
 
@@ -108,7 +109,7 @@ plan mode にして、「返品理由を追加したい。テンプレートの�
 左と右、2つのエージェントが、別のブランチで、同時に作業しています。
 
 終わるまで少しかかるので、スライドに戻って、ループの止まり方の話をします。</div>
-<div class="nt-vi">VN: (1) Shift+Tab vào plan mode, dán prompt → agent chia ticket theo template (xem: file được chạm, tiêu chí bằng lệnh, dependency, có hỏi TBD không). (2) reset.sh d3 tạo 2 worktree .worktrees/T1 T2 (lệnh cd được in ra); mở 2 terminal, mỗi bên claude + prompt ticket trong RUNBOOK. Không cần chờ xong — quay lại slide, cuối khối C liếc lại kết quả.</div>
+<div class="nt-vi">VN: (1) Shift+Tab vào plan mode, dán prompt → agent chia ticket theo template (xem: file được chạm, tiêu chí bằng lệnh, dependency, có hỏi TBD không). (2) ./demo/go.sh 3p: tạo 2 worktree + tự mở 2 cửa sổ Terminal đã chạy claude; dán prompt T1 (đã copy), rồi go.sh c 3p2 để copy prompt T2. Không cần chờ xong — quay lại slide, cuối khối C liếc lại kết quả.</div>
 </aside>
 </section>
 
@@ -120,20 +121,20 @@ plan mode にして、「返品理由を追加したい。テンプレートの�
   <div class="row mt" style="gap:30px;align-items:stretch">
     <div class="dbox grow">
       <div class="dkt">① specify (約1.5分)</div>
-      <div class="cmd">$ ./demo/reset.sh d4 &amp;&amp; claude</div>
+      <div class="cmd">$ ./demo/go.sh 4</div>
       <div class="prompt ja" style="font-size:23px;margin-top:8px">/speckit-specify 返品申請に「返品理由」を追加したい。理由は 不良品・サイズ違い・イメージ違い・その他。理由によって返金のルールが変わる可能性がある。</div>
       <div class="dkt mt">② 準備した plan / tasks → GitHub Issues</div>
-      <div class="cmd" style="font-size:20px">$ ./demo/reset.sh d4-cook</div>
-      <div class="prompt ja" style="font-size:22px;margin-top:8px">specs/001-return-reason/tasks.md の Phase 1〜2 のタスクを、GitHub MCP で issue にして。タイトルにタスクID、本文に User Story / FR を書いて。</div>
+      <div class="cmd" style="font-size:20px">$ ./demo/go.sh 4b   <span style="color:var(--dkmute)"># 別ターミナル</span></div>
+      <div class="prompt ja" style="font-size:22px;margin-top:8px">tasks.md の Phase 1〜2 と ⛔ BLOCKED のタスクを、GitHub MCP で issue に。BLOCKED には needs-PO ラベル。</div>
     </div>
     <div class="dbox" style="width:480px">
       <div class="dkt">見るポイント</div>
-      <ul class="dl ja"><li><b>Given / When / Then</b> = 受入テストの元</li><li><b>NEEDS CLARIFICATION</b><br>= 人が決めること (A/B/C)</li><li>Issue に <b>FR</b> がつながる</li></ul>
+      <ul class="dl ja"><li><b>Given / When / Then</b> = 受入テストの元</li><li><b>NEEDS CLARIFICATION</b><br>= 人が決めること (A/B/C)</li><li>Issue に <b>FR</b> がつながる<br>⛔ = PO の判断待ち</li></ul>
     </div>
   </div>
   <div class="demo-foot ja">⏱ 約6分 · plan/tasks は時間がかかるので「準備しておいたもの」を使う (料理番組方式)</div>
 <aside class="notes">
-<div class="nt-cue">DEMO ④ 6分 · ① specify ライブ (約90秒、待つ間に V-Model を指して話す) → spec.md を開く → ② 別ターミナルで reset.sh d4-cook → Issue 作成プロンプト → GitHub の画面で Issue を見せる</div>
+<div class="nt-cue">DEMO ④ 6分 · ① ./demo/go.sh 4 → ⌘V (約90秒、待つ間に V-Model を指して話す) → spec.md を開く → ② 別ターミナルで ./demo/go.sh 4b → 元の claude に ⌘V → Issue 作成プロンプト → GitHub の画面で Issue を見せる</div>
 <div class="nt-jp">では、Spec first を実際にやります。
 Spec Kit に、「返品理由を追加したい」とだけ伝えます。
 
@@ -151,7 +152,7 @@ plan と tasks は時間がかかるので、料理番組のように、準備�
 最後に、タスクを GitHub の Issue にします。GitHub MCP を使います。
 （GitHub の画面）Issue ができました。本文に User Story と FR が書いてあります。
 これで、要件、Issue、テスト、PR がつながります。</div>
-<div class="nt-vi">VN: (1) reset.sh d4; claude; /speckit-specify ... (~90s, chạy thử thật: ra spec có 3 User Story, Given/When/Then, FR-001..010, 3 NEEDS CLARIFICATION có lựa chọn A/B/C). Trong lúc chờ nói về V-Model. (2) terminal khác: reset.sh d4-cook (thay bằng spec/plan/tasks đã chuẩn bị). (3) prompt tạo issue qua GitHub MCP vào repo dzungtri/workshopskjp1 → mở trang Issues trên GitHub. Cần: GitHub MCP đã cấu hình trong Claude Code + repo có remote.</div>
+<div class="nt-vi">VN: (1) ./demo/go.sh 4 → ⌘V (/speckit-specify ...) (~90s, chạy thử thật: ra spec có 3 User Story, Given/When/Then, FR-001..010, 3 NEEDS CLARIFICATION có lựa chọn A/B/C). Trong lúc chờ nói về V-Model. (2) terminal khác: ./demo/go.sh 4b (thay bằng spec/plan/tasks đã chuẩn bị + copy prompt issue). (3) ⌘V vào claude cũ: tạo issue qua GitHub MCP vào repo dzungtri/workshopskjp1 → mở trang Issues trên GitHub. Cần: GitHub MCP đã cấu hình trong Claude Code + repo có remote.</div>
 </aside>
 </section>
 
@@ -161,10 +162,10 @@ plan と tasks は時間がかかるので、料理番組のように、準備�
   <div class="row mt" style="gap:30px;align-items:stretch">
     <div class="dbox grow">
       <div class="dkt">terminal</div>
-      <div class="cmd">$ ./demo/reset.sh d5 &amp;&amp; npm test   <span style="color:var(--c-ok)"># 全部 green</span></div>
+      <div class="cmd">$ ./demo/go.sh 5   <span style="color:var(--c-ok)"># ready: pass 38 · fail 0 (全部 green)</span></div>
       <div class="dkt mt">① 新しいセッションでレビュー</div>
       <div class="prompt ja" style="font-size:24px">main との差分をレビューしてください。docs/review-checklist.md を使って、マージしてよいか判断して。</div>
-      <div class="dkt mt">② テストを先に</div>
+      <div class="dkt mt">② テストを先に <span style="color:var(--c-tool)">($ ./demo/go.sh c 5b)</span></div>
       <div class="prompt ja" style="font-size:24px">二重返金を再現する、失敗するテストを先に書いて。そのあと直して。</div>
     </div>
     <div class="dbox" style="width:500px">
@@ -175,7 +176,7 @@ plan と tasks は時間がかかるので、料理番組のように、準備�
   <div class="demo-foot ja">⏱ 約4分</div>
 <style>.dbox .r{color:var(--c-bad)} .dbox .g{color:var(--c-ok)}</style>
 <aside class="notes">
-<div class="nt-cue">DEMO ⑤ 4分 · 前のスライド (演習) で答えを言わずに来る → reset.sh d5 → npm test (green) → claude で①レビュー → ②テスト先行</div>
+<div class="nt-cue">DEMO ⑤ 4分 · 前のスライド (演習) で答えを言わずに来る → ./demo/go.sh 5 (ready: fail 0 = green) → ⌘V ①レビュー → ./demo/go.sh c 5b → ⌘V ②テスト先行</div>
 <div class="nt-jp">さっきの演習のPRです。まず、テストを実行します。……全部、緑ですね。
 
 では、新しいセッションで、AIにレビューをお願いします。チェックリストを使って、と指示します。
@@ -199,7 +200,7 @@ AIは二重返金に気づいたでしょうか。
   <h1 class="ja">Context の中身を<span class="y">見てみる</span></h1>
   <div class="row mt" style="gap:30px;align-items:stretch">
     <div class="dbox grow">
-      <div class="dkt">① 今の context</div>
+      <div class="dkt">① 今の context <span style="color:var(--c-tool)">($ ./demo/go.sh 6 · 別ターミナル)</span></div>
       <div class="cmd">/context</div>
       <div class="dkt mt">② subagent で調査</div>
       <div class="prompt ja" style="font-size:24px">subagent を使って、返金処理がどこから呼ばれているか調べて、要点だけ教えて。</div>
@@ -213,7 +214,7 @@ AIは二重返金に気づいたでしょうか。
   </div>
   <div class="demo-foot ja">⏱ 約4分 · DEMO ⑤ のセッションをそのまま使う</div>
 <aside class="notes">
-<div class="nt-cue">DEMO ⑥ 4分 · DEMO ⑤ のセッションを続けて使う (context が溜まっている) → /context → subagent → /context → /compact → /context</div>
+<div class="nt-cue">DEMO ⑥ 4分 · DEMO ⑤ のセッションを続けて使う · 別ターミナルで ./demo/go.sh 6 (6a /context をコピー) → c 6b → c 6c → subagent → /context → /compact → /context</div>
 <div class="nt-jp">さっきのセッションを、そのまま使います。もう、かなり作業しました。
 /context で、机の上を見てみます。
 

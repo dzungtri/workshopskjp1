@@ -566,7 +566,7 @@ Claude Code も、Copilot も、Cursor も、Codex も。
   <div class="row mt" style="gap:30px;align-items:stretch">
     <div class="dbox grow">
       <div class="dkt">terminal</div>
-      <div class="cmd">$ ./demo/reset.sh d1 &amp;&amp; claude</div>
+      <div class="cmd">$ ./demo/go.sh 1   <span style="color:var(--dkmute)"># リセット + コピー + claude</span></div>
       <div class="dkt mt">prompt</div>
       <div class="prompt ja"><ruby class="fu">返品<rt>へんぴん</rt></ruby><ruby class="fu">期限<rt>きげん</rt></ruby>（<ruby class="fu">受取<rt>うけとり</rt></ruby>から8日）を<ruby class="fu">過<rt>す</rt></ruby>ぎても<ruby class="fu">返金<rt>へんきん</rt></ruby>されてしまいます。<ruby class="fu">原因<rt>げんいん</rt></ruby>を<ruby class="fu">調<rt>しら</rt></ruby>べて<ruby class="fu">直<rt>なお</rt></ruby>してください。</div>
     </div>
@@ -577,7 +577,7 @@ Claude Code も、Copilot も、Cursor も、Codex も。
   </div>
   <div class="demo-foot ja">⏱ <ruby class="fu">約<rt>やく</rt></ruby>6分 · <ruby class="fu">終<rt>お</rt></ruby>わったら<ruby class="fu">次<rt>つぎ</rt></ruby>のスライドで<ruby class="fu">中身<rt>なかみ</rt></ruby>を<ruby class="fu">説明<rt>せつめい</rt></ruby>します</div>
 <aside class="notes">
-<div class="nt-cue">⏱ 7:00–13:00 (6分) · DEMO ① 6分 · <ruby class="fu">操作<rt>そうさ</rt></ruby>: reset.sh d1 → claude → プロンプトをコピペ
+<div class="nt-cue">⏱ 7:00–13:00 (6分) · DEMO ① 6分 · <ruby class="fu">操作<rt>そうさ</rt></ruby>: ./demo/go.sh 1 → ⌘V → Enter
 <ruby class="fu">待<rt>ま</rt></ruby>ち<ruby class="fu">時間<rt>じかん</rt></ruby>: <ruby class="fu">画面<rt>がめん</rt></ruby>の tool call を<ruby class="fu">指<rt>ゆび</rt></ruby>さして<ruby class="fu">説明<rt>せつめい</rt></ruby></div>
 <div class="nt-jp">では、<ruby class="fu">実際<rt>じっさい</rt></ruby>に<ruby class="fu">動<rt>うご</rt></ruby>かしてみます。
 
@@ -593,7 +593,7 @@ Claude Code も、Copilot も、Cursor も、Codex も。
 
 テストが<ruby class="fu">全部<rt>ぜんぶ</rt></ruby><ruby class="fu">通<rt>かよ</rt></ruby>って、tool_use がなくなったので、<ruby class="fu">終<rt>お</rt></ruby>わりました。
 <ruby class="fu">今<rt>いま</rt></ruby>のが Agent Loop です。<ruby class="fu">次<rt>つぎ</rt></ruby>のスライドで、<ruby class="fu">中<rt>なか</rt></ruby>で<ruby class="fu">何<rt>なん</rt></ruby>が<ruby class="fu">起<rt>お</rt></ruby>きていたかを<ruby class="fu">見<rt>み</rt></ruby>ます。</div>
-<div class="nt-vi">VN thao tác: (1) cd ec-demo; ./demo/reset.sh d1; claude (2) copy prompt từ slide/RUNBOOK (3) trong lúc chạy, chỉ vào Read/Edit/Bash, test fail → tự sửa (4) nếu chạy lâu: vừa chờ vừa giải thích tool call trên màn hình. Lưu ý: Stop hook sẽ tự chạy npm test khi agent định kết thúc.</div>
+<div class="nt-vi">VN thao tác: (1) cd workshop/ec-demo; ./demo/go.sh 1 (tự reset + copy prompt + mở claude) (2) ⌘V Enter (3) trong lúc chạy, chỉ vào Read/Edit/Bash, test fail → tự sửa (4) nếu chạy lâu: vừa chờ vừa giải thích tool call trên màn hình. Lưu ý: Stop hook sẽ tự chạy npm test khi agent định kết thúc.</div>
 </aside>
 </section>
 <section class="slide" id="s-loop" data-title="Agent Loop アニメーション" data-part="A. Agent Loop (8–23')" data-steps="7" style="padding:40px 60px 40px">
@@ -868,11 +868,11 @@ Hook も<ruby class="fu">通<rt>とお</rt></ruby>る、CI もテストは<ruby 
   <div class="row mt" style="gap:30px;align-items:stretch">
     <div class="dbox grow">
       <div class="dkt">terminal</div>
-      <div class="cmd">$ ./demo/reset.sh d2 &amp;&amp; claude</div>
+      <div class="cmd">$ ./demo/go.sh 2</div>
       <div class="dkt mt">prompt</div>
       <div class="dkt mt">A: <ruby class="fu">未<rt>み</rt></ruby><ruby class="fu">決定<rt>けってい</rt></ruby>のルール</div>
       <div class="prompt ja" style="font-size:24px"><ruby class="fu">決済<rt>けっさい</rt></ruby>が<ruby class="fu">失敗<rt>しっぱい</rt></ruby>したら、3回までリトライするようにしてください。</div>
-      <div class="dkt mt">B: <ruby class="fu">保護<rt>ほご</rt></ruby>されたファイル</div>
+      <div class="dkt mt">B: <ruby class="fu">保護<rt>ほご</rt></ruby>されたファイル <span style="color:var(--c-tool)">($ ./demo/go.sh c 2b)</span></div>
       <div class="prompt ja" style="font-size:24px">src/payment/fake-gateway.js の charge() に、<ruby class="fu">呼び出<rt>よびだ</rt></ruby>しログを<ruby class="fu">追加<rt>ついか</rt></ruby>してください。</div>
     </div>
     <div class="dbox" style="width:560px">
@@ -882,7 +882,7 @@ Hook も<ruby class="fu">通<rt>とお</rt></ruby>る、CI もテストは<ruby 
   </div>
   <div class="demo-foot ja">⏱ <ruby class="fu">約<rt>やく</rt></ruby>6分 · <ruby class="fu">最後<rt>さいご</rt></ruby>に <code>.claude/settings.json</code> を<ruby class="fu">見<rt>み</rt></ruby>せる</div>
 <aside class="notes">
-<div class="nt-cue">⏱ 23:30–30:30 (7分) · DEMO ② 7分 · <ruby class="fu">操作<rt>そうさ</rt></ruby>: reset.sh d2 → claude → プロンプト → (<ruby class="fu">結果<rt>けっか</rt></ruby>を<ruby class="fu">見<rt>み</rt></ruby>る) → settings.json を cat で<ruby class="fu">見<rt>み</rt></ruby>せる</div>
+<div class="nt-cue">⏱ 23:30–30:30 (7分) · DEMO ② 6分 · <ruby class="fu">操作<rt>そうさ</rt></ruby>: ./demo/go.sh 2 → ⌘V (2a) → <ruby class="fu">別<rt>べつ</rt></ruby>ターミナル ./demo/go.sh c 2b → ⌘V → <ruby class="fu">最後<rt>さいご</rt></ruby>に cat .claude/settings.json</div>
 <div class="nt-jp"><ruby class="fu">次<rt>つぎ</rt></ruby>は、ガードレールが<ruby class="fu">止<rt>と</rt></ruby>めるところを<ruby class="fu">見<rt>み</rt></ruby>ます。お<ruby class="fu">願<rt>ねが</rt></ruby>いを2つします。
 
 Aは「<ruby class="fu">決済<rt>けっさい</rt></ruby>が<ruby class="fu">失敗<rt>しっぱい</rt></ruby>したら、3回までリトライして」。
@@ -1156,10 +1156,11 @@ git worktree add ../ec-T3 -b feat/T3 main</pre>
   <h1 class="ja">チケットに<ruby class="fu">分<rt>わ</rt></ruby>けて、<span class="y"><ruby class="fu">同時<rt>どうじ</rt></ruby>に</span><ruby class="fu">進<rt>すす</rt></ruby>める</h1>
   <div class="row mt" style="gap:30px;align-items:stretch">
     <div class="dbox grow">
-      <div class="dkt">① plan mode (Shift+Tab)</div>
+      <div class="dkt">① plan mode</div>
+      <div class="cmd" style="font-size:20px">$ ./demo/go.sh 3   <span style="color:var(--dkmute)"># <ruby class="fu">起動<rt>きどう</rt></ruby><ruby class="fu">後<rt>ご</rt></ruby> Shift+Tab</span></div>
       <div class="prompt ja" style="font-size:24px"><ruby class="fu">返品<rt>へんぴん</rt></ruby>に「<ruby class="fu">返品<rt>へんぴん</rt></ruby><ruby class="fu">理由<rt>りゆう</rt></ruby>（<ruby class="fu">不良<rt>ふりょう</rt></ruby><ruby class="fu">品<rt>ひん</rt></ruby> · サイズ<ruby class="fu">違<rt>ちが</rt></ruby>い · その<ruby class="fu">他<rt>ほか</rt></ruby>）」を<ruby class="fu">追加<rt>ついか</rt></ruby>したい。docs/tasks/ticket-template.md の<ruby class="fu">形<rt>かたち</rt></ruby>でチケットに<ruby class="fu">分<rt>わ</rt></ruby>けて、<ruby class="fu">依存<rt>いぞん</rt></ruby><ruby class="fu">関係<rt>かんけい</rt></ruby>も<ruby class="fu">書<rt>か</rt></ruby>いて。まだ<ruby class="fu">実装<rt>じっそう</rt></ruby>しないで。</div>
       <div class="dkt mt">② 2つの worktree で<ruby class="fu">同時<rt>どうじ</rt></ruby>に</div>
-      <div class="cmd" style="font-size:19px">$ ./demo/reset.sh d3   <span style="color:var(--dkmute)"># worktree T1, T2 を<ruby class="fu">作<rt>つく</rt></ruby>る</span></div>
+      <div class="cmd" style="font-size:20px">$ ./demo/go.sh 3p   <span style="color:var(--dkmute)"># worktree ×2 + Terminal ×2</span></div>
     </div>
     <div class="dbox" style="width:520px">
       <div class="dkt"><ruby class="fu">見<rt>み</rt></ruby>るポイント</div>
@@ -1168,7 +1169,7 @@ git worktree add ../ec-T3 -b feat/T3 main</pre>
   </div>
   <div class="demo-foot ja">⏱ <ruby class="fu">約<rt>やく</rt></ruby>6分</div>
 <aside class="notes">
-<div class="nt-cue">⏱ 42:30–48:30 (6分) · DEMO ③ 6分 · ① plan mode でチケット<ruby class="fu">分解<rt>ぶんかい</rt></ruby> (2分) → ② reset.sh d3 → ターミナル2つで claude (<ruby class="fu">各<rt>かく</rt></ruby>チケット) → 1つ<ruby class="fu">終<rt>お</rt></ruby>わるまで<ruby class="fu">待<rt>ま</rt></ruby>たずに<ruby class="fu">次<rt>つぎ</rt></ruby>スライドへ<ruby class="fu">戻<rt>もど</rt></ruby>ってもOK</div>
+<div class="nt-cue">⏱ 42:30–48:30 (6分) · DEMO ③ 6分 · ① ./demo/go.sh 3 → Shift+Tab → ⌘V (2分) → ② ./demo/go.sh 3p (Terminal が2つ<ruby class="fu">開<rt>ひら</rt></ruby>く) → T1 に ⌘V · ./demo/go.sh c 3p2 → T2 に ⌘V → 1つ<ruby class="fu">終<rt>お</rt></ruby>わるまで<ruby class="fu">待<rt>ま</rt></ruby>たずに<ruby class="fu">次<rt>つぎ</rt></ruby>スライドへ<ruby class="fu">戻<rt>もど</rt></ruby>ってもOK</div>
 <div class="nt-jp">では、チケットに<ruby class="fu">分<rt>わ</rt></ruby>けるところを<ruby class="fu">見<rt>み</rt></ruby>ます。
 plan mode にして、「<ruby class="fu">返品<rt>へんぴん</rt></ruby><ruby class="fu">理由<rt>りゆう</rt></ruby>を<ruby class="fu">追加<rt>ついか</rt></ruby>したい。テンプレートの<ruby class="fu">形<rt>かたち</rt></ruby>でチケットに<ruby class="fu">分<rt>わ</rt></ruby>けて。まだ<ruby class="fu">実装<rt>じっそう</rt></ruby>しないで」とお<ruby class="fu">願<rt>ねが</rt></ruby>いします。
 
@@ -1180,7 +1181,7 @@ plan mode にして、「<ruby class="fu">返品<rt>へんぴん</rt></ruby><rub
 <ruby class="fu">左<rt>ひだり</rt></ruby>と<ruby class="fu">右<rt>みぎ</rt></ruby>、2つのエージェントが、<ruby class="fu">別<rt>べつ</rt></ruby>のブランチで、<ruby class="fu">同時<rt>どうじ</rt></ruby>に<ruby class="fu">作業<rt>さぎょう</rt></ruby>しています。
 
 <ruby class="fu">終<rt>お</rt></ruby>わるまで<ruby class="fu">少<rt>すこ</rt></ruby>しかかるので、スライドに<ruby class="fu">戻<rt>もど</rt></ruby>って、ループの<ruby class="fu">止<rt>と</rt></ruby>まり<ruby class="fu">方<rt>かた</rt></ruby>の<ruby class="fu">話<rt>はなし</rt></ruby>をします。</div>
-<div class="nt-vi">VN: (1) Shift+Tab vào plan mode, dán prompt → agent chia ticket theo template (xem: file được chạm, tiêu chí bằng lệnh, dependency, có hỏi TBD không). (2) reset.sh d3 tạo 2 worktree .worktrees/T1 T2 (lệnh cd được in ra); mở 2 terminal, mỗi bên claude + prompt ticket trong RUNBOOK. Không cần chờ xong — quay lại slide, cuối khối C liếc lại kết quả.</div>
+<div class="nt-vi">VN: (1) Shift+Tab vào plan mode, dán prompt → agent chia ticket theo template (xem: file được chạm, tiêu chí bằng lệnh, dependency, có hỏi TBD không). (2) ./demo/go.sh 3p: tạo 2 worktree + tự mở 2 cửa sổ Terminal đã chạy claude; dán prompt T1 (đã copy), rồi go.sh c 3p2 để copy prompt T2. Không cần chờ xong — quay lại slide, cuối khối C liếc lại kết quả.</div>
 </aside>
 </section>
 <section class="slide" id="s-loopeng" data-title="Loop Engineering" data-part="C. 開発プロセス (45–68')">
@@ -1441,20 +1442,20 @@ Anthropic が<ruby class="fu">公開<rt>こうかい</rt></ruby>しているや�
   <div class="row mt" style="gap:30px;align-items:stretch">
     <div class="dbox grow">
       <div class="dkt">① specify (<ruby class="fu">約<rt>やく</rt></ruby>1.5分)</div>
-      <div class="cmd">$ ./demo/reset.sh d4 &amp;&amp; claude</div>
+      <div class="cmd">$ ./demo/go.sh 4</div>
       <div class="prompt ja" style="font-size:23px;margin-top:8px">/speckit-specify <ruby class="fu">返品<rt>へんぴん</rt></ruby><ruby class="fu">申請<rt>しんせい</rt></ruby>に「<ruby class="fu">返品<rt>へんぴん</rt></ruby><ruby class="fu">理由<rt>りゆう</rt></ruby>」を<ruby class="fu">追加<rt>ついか</rt></ruby>したい。<ruby class="fu">理由<rt>りゆう</rt></ruby>は <ruby class="fu">不良<rt>ふりょう</rt></ruby><ruby class="fu">品<rt>ひん</rt></ruby>・サイズ<ruby class="fu">違<rt>ちが</rt></ruby>い・イメージ<ruby class="fu">違<rt>ちが</rt></ruby>い・その<ruby class="fu">他<rt>ほか</rt></ruby>。<ruby class="fu">理由<rt>りゆう</rt></ruby>によって<ruby class="fu">返金<rt>へんきん</rt></ruby>のルールが<ruby class="fu">変<rt>か</rt></ruby>わる<ruby class="fu">可能<rt>かのう</rt></ruby><ruby class="fu">性<rt>せい</rt></ruby>がある。</div>
       <div class="dkt mt">② <ruby class="fu">準備<rt>じゅんび</rt></ruby>した plan / tasks → GitHub Issues</div>
-      <div class="cmd" style="font-size:20px">$ ./demo/reset.sh d4-cook</div>
-      <div class="prompt ja" style="font-size:22px;margin-top:8px">specs/001-return-reason/tasks.md の Phase 1〜2 のタスクを、GitHub MCP で issue にして。タイトルにタスクID、<ruby class="fu">本文<rt>ほんぶん</rt></ruby>に User Story / FR を<ruby class="fu">書<rt>か</rt></ruby>いて。</div>
+      <div class="cmd" style="font-size:20px">$ ./demo/go.sh 4b   <span style="color:var(--dkmute)"># <ruby class="fu">別<rt>べつ</rt></ruby>ターミナル</span></div>
+      <div class="prompt ja" style="font-size:22px;margin-top:8px">tasks.md の Phase 1〜2 と ⛔ BLOCKED のタスクを、GitHub MCP で issue に。BLOCKED には needs-PO ラベル。</div>
     </div>
     <div class="dbox" style="width:480px">
       <div class="dkt"><ruby class="fu">見<rt>み</rt></ruby>るポイント</div>
-      <ul class="dl ja"><li><b>Given / When / Then</b> = <ruby class="fu">受入<rt>うけいれ</rt></ruby>テストの<ruby class="fu">元<rt>もと</rt></ruby></li><li><b>NEEDS CLARIFICATION</b><br>= <ruby class="fu">人<rt>ひと</rt></ruby>が<ruby class="fu">決<rt>き</rt></ruby>めること (A/B/C)</li><li>Issue に <b>FR</b> がつながる</li></ul>
+      <ul class="dl ja"><li><b>Given / When / Then</b> = <ruby class="fu">受入<rt>うけいれ</rt></ruby>テストの<ruby class="fu">元<rt>もと</rt></ruby></li><li><b>NEEDS CLARIFICATION</b><br>= <ruby class="fu">人<rt>ひと</rt></ruby>が<ruby class="fu">決<rt>き</rt></ruby>めること (A/B/C)</li><li>Issue に <b>FR</b> がつながる<br>⛔ = PO の<ruby class="fu">判断<rt>はんだん</rt></ruby><ruby class="fu">待<rt>ま</rt></ruby>ち</li></ul>
     </div>
   </div>
   <div class="demo-foot ja">⏱ <ruby class="fu">約<rt>やく</rt></ruby>6分 · plan/tasks は<ruby class="fu">時間<rt>じかん</rt></ruby>がかかるので「<ruby class="fu">準備<rt>じゅんび</rt></ruby>しておいたもの」を<ruby class="fu">使<rt>つか</rt></ruby>う (<ruby class="fu">料理<rt>りょうり</rt></ruby><ruby class="fu">番組<rt>ばんぐみ</rt></ruby><ruby class="fu">方式<rt>ほうしき</rt></ruby>)</div>
 <aside class="notes">
-<div class="nt-cue">⏱ 62:30–68:30 (6分) · DEMO ④ 6分 · ① specify ライブ (<ruby class="fu">約<rt>やく</rt></ruby>90秒、<ruby class="fu">待<rt>ま</rt></ruby>つ<ruby class="fu">間<rt>ま</rt></ruby>に V-Model を<ruby class="fu">指<rt>さ</rt></ruby>して<ruby class="fu">話<rt>はな</rt></ruby>す) → spec.md を<ruby class="fu">開<rt>ひら</rt></ruby>く → ② <ruby class="fu">別<rt>べつ</rt></ruby>ターミナルで reset.sh d4-cook → Issue <ruby class="fu">作成<rt>さくせい</rt></ruby>プロンプト → GitHub の<ruby class="fu">画面<rt>がめん</rt></ruby>で Issue を<ruby class="fu">見<rt>み</rt></ruby>せる</div>
+<div class="nt-cue">⏱ 62:30–68:30 (6分) · DEMO ④ 6分 · ① ./demo/go.sh 4 → ⌘V (<ruby class="fu">約<rt>やく</rt></ruby>90秒、<ruby class="fu">待<rt>ま</rt></ruby>つ<ruby class="fu">間<rt>ま</rt></ruby>に V-Model を<ruby class="fu">指<rt>さ</rt></ruby>して<ruby class="fu">話<rt>はな</rt></ruby>す) → spec.md を<ruby class="fu">開<rt>ひら</rt></ruby>く → ② <ruby class="fu">別<rt>べつ</rt></ruby>ターミナルで ./demo/go.sh 4b → <ruby class="fu">元<rt>もと</rt></ruby>の claude に ⌘V → Issue <ruby class="fu">作成<rt>さくせい</rt></ruby>プロンプト → GitHub の<ruby class="fu">画面<rt>がめん</rt></ruby>で Issue を<ruby class="fu">見<rt>み</rt></ruby>せる</div>
 <div class="nt-jp">では、Spec first を<ruby class="fu">実際<rt>じっさい</rt></ruby>にやります。
 Spec Kit に、「<ruby class="fu">返品<rt>へんぴん</rt></ruby><ruby class="fu">理由<rt>りゆう</rt></ruby>を<ruby class="fu">追加<rt>ついか</rt></ruby>したい」とだけ<ruby class="fu">伝<rt>つた</rt></ruby>えます。
 
@@ -1472,7 +1473,7 @@ plan と tasks は<ruby class="fu">時間<rt>じかん</rt></ruby>がかかる�
 <ruby class="fu">最後<rt>さいご</rt></ruby>に、タスクを GitHub の Issue にします。GitHub MCP を<ruby class="fu">使<rt>つか</rt></ruby>います。
 （GitHub の<ruby class="fu">画面<rt>がめん</rt></ruby>）Issue ができました。<ruby class="fu">本文<rt>ほんぶん</rt></ruby>に User Story と FR が<ruby class="fu">書<rt>か</rt></ruby>いてあります。
 これで、<ruby class="fu">要件<rt>ようけん</rt></ruby>、Issue、テスト、PR がつながります。</div>
-<div class="nt-vi">VN: (1) reset.sh d4; claude; /speckit-specify ... (~90s, chạy thử thật: ra spec có 3 User Story, Given/When/Then, FR-001..010, 3 NEEDS CLARIFICATION có lựa chọn A/B/C). Trong lúc chờ nói về V-Model. (2) terminal khác: reset.sh d4-cook (thay bằng spec/plan/tasks đã chuẩn bị). (3) prompt tạo issue qua GitHub MCP vào repo dzungtri/workshopskjp1 → mở trang Issues trên GitHub. Cần: GitHub MCP đã cấu hình trong Claude Code + repo có remote.</div>
+<div class="nt-vi">VN: (1) ./demo/go.sh 4 → ⌘V (/speckit-specify ...) (~90s, chạy thử thật: ra spec có 3 User Story, Given/When/Then, FR-001..010, 3 NEEDS CLARIFICATION có lựa chọn A/B/C). Trong lúc chờ nói về V-Model. (2) terminal khác: ./demo/go.sh 4b (thay bằng spec/plan/tasks đã chuẩn bị + copy prompt issue). (3) ⌘V vào claude cũ: tạo issue qua GitHub MCP vào repo dzungtri/workshopskjp1 → mở trang Issues trên GitHub. Cần: GitHub MCP đã cấu hình trong Claude Code + repo có remote.</div>
 </aside>
 </section>
 <section class="slide" id="s-exercise" data-title="演習: テストは緑のPR" data-part="D. 品質保証 (71–91')">
@@ -1521,10 +1522,10 @@ plan と tasks は<ruby class="fu">時間<rt>じかん</rt></ruby>がかかる�
   <div class="row mt" style="gap:30px;align-items:stretch">
     <div class="dbox grow">
       <div class="dkt">terminal</div>
-      <div class="cmd">$ ./demo/reset.sh d5 &amp;&amp; npm test   <span style="color:var(--c-ok)"># <ruby class="fu">全部<rt>ぜんぶ</rt></ruby> green</span></div>
+      <div class="cmd">$ ./demo/go.sh 5   <span style="color:var(--c-ok)"># ready: pass 38 · fail 0 (<ruby class="fu">全部<rt>ぜんぶ</rt></ruby> green)</span></div>
       <div class="dkt mt">① <ruby class="fu">新<rt>あたら</rt></ruby>しいセッションでレビュー</div>
       <div class="prompt ja" style="font-size:24px">main との<ruby class="fu">差分<rt>さぶん</rt></ruby>をレビューしてください。docs/review-checklist.md を<ruby class="fu">使<rt>つか</rt></ruby>って、マージしてよいか<ruby class="fu">判断<rt>はんだん</rt></ruby>して。</div>
-      <div class="dkt mt">② テストを<ruby class="fu">先<rt>さき</rt></ruby>に</div>
+      <div class="dkt mt">② テストを<ruby class="fu">先<rt>さき</rt></ruby>に <span style="color:var(--c-tool)">($ ./demo/go.sh c 5b)</span></div>
       <div class="prompt ja" style="font-size:24px"><ruby class="fu">二<rt>に</rt></ruby><ruby class="fu">重<rt>じゅう</rt></ruby><ruby class="fu">返金<rt>へんきん</rt></ruby>を<ruby class="fu">再現<rt>さいげん</rt></ruby>する、<ruby class="fu">失敗<rt>しっぱい</rt></ruby>するテストを<ruby class="fu">先<rt>さき</rt></ruby>に<ruby class="fu">書<rt>か</rt></ruby>いて。そのあと<ruby class="fu">直<rt>なお</rt></ruby>して。</div>
     </div>
     <div class="dbox" style="width:500px">
@@ -1535,7 +1536,7 @@ plan と tasks は<ruby class="fu">時間<rt>じかん</rt></ruby>がかかる�
   <div class="demo-foot ja">⏱ <ruby class="fu">約<rt>やく</rt></ruby>4分</div>
 <style>.dbox .r{color:var(--c-bad)} .dbox .g{color:var(--c-ok)}</style>
 <aside class="notes">
-<div class="nt-cue">⏱ 70:00–74:00 (4分) · DEMO ⑤ 4分 · <ruby class="fu">前<rt>まえ</rt></ruby>のスライド (<ruby class="fu">演習<rt>えんしゅう</rt></ruby>) で<ruby class="fu">答<rt>こた</rt></ruby>えを<ruby class="fu">言<rt>い</rt></ruby>わずに<ruby class="fu">来<rt>く</rt></ruby>る → reset.sh d5 → npm test (green) → claude で①レビュー → ②テスト<ruby class="fu">先行<rt>せんこう</rt></ruby></div>
+<div class="nt-cue">⏱ 70:00–74:00 (4分) · DEMO ⑤ 4分 · <ruby class="fu">前<rt>まえ</rt></ruby>のスライド (<ruby class="fu">演習<rt>えんしゅう</rt></ruby>) で<ruby class="fu">答<rt>こた</rt></ruby>えを<ruby class="fu">言<rt>い</rt></ruby>わずに<ruby class="fu">来<rt>く</rt></ruby>る → ./demo/go.sh 5 (ready: fail 0 = green) → ⌘V ①レビュー → ./demo/go.sh c 5b → ⌘V ②テスト<ruby class="fu">先行<rt>せんこう</rt></ruby></div>
 <div class="nt-jp">さっきの<ruby class="fu">演習<rt>えんしゅう</rt></ruby>のPRです。まず、テストを<ruby class="fu">実行<rt>じっこう</rt></ruby>します。……<ruby class="fu">全部<rt>ぜんぶ</rt></ruby>、<ruby class="fu">緑<rt>みどり</rt></ruby>ですね。
 
 では、<ruby class="fu">新<rt>あたら</rt></ruby>しいセッションで、AIにレビューをお<ruby class="fu">願<rt>ねが</rt></ruby>いします。チェックリストを<ruby class="fu">使<rt>つか</rt></ruby>って、と<ruby class="fu">指示<rt>しじ</rt></ruby>します。
@@ -1646,7 +1647,7 @@ AIは<ruby class="fu">二<rt>に</rt></ruby><ruby class="fu">重<rt>じゅう</r
   <h1 class="ja">Context の<ruby class="fu">中身<rt>なかみ</rt></ruby>を<span class="y"><ruby class="fu">見<rt>み</rt></ruby>てみる</span></h1>
   <div class="row mt" style="gap:30px;align-items:stretch">
     <div class="dbox grow">
-      <div class="dkt">① <ruby class="fu">今<rt>いま</rt></ruby>の context</div>
+      <div class="dkt">① <ruby class="fu">今<rt>いま</rt></ruby>の context <span style="color:var(--c-tool)">($ ./demo/go.sh 6 · <ruby class="fu">別<rt>べつ</rt></ruby>ターミナル)</span></div>
       <div class="cmd">/context</div>
       <div class="dkt mt">② subagent で<ruby class="fu">調査<rt>ちょうさ</rt></ruby></div>
       <div class="prompt ja" style="font-size:24px">subagent を<ruby class="fu">使<rt>つか</rt></ruby>って、<ruby class="fu">返金<rt>へんきん</rt></ruby><ruby class="fu">処理<rt>しょり</rt></ruby>がどこから<ruby class="fu">呼<rt>よ</rt></ruby>ばれているか<ruby class="fu">調<rt>しら</rt></ruby>べて、<ruby class="fu">要点<rt>ようてん</rt></ruby>だけ<ruby class="fu">教<rt>おし</rt></ruby>えて。</div>
@@ -1660,7 +1661,7 @@ AIは<ruby class="fu">二<rt>に</rt></ruby><ruby class="fu">重<rt>じゅう</r
   </div>
   <div class="demo-foot ja">⏱ <ruby class="fu">約<rt>やく</rt></ruby>4分 · DEMO ⑤ のセッションをそのまま<ruby class="fu">使<rt>つか</rt></ruby>う</div>
 <aside class="notes">
-<div class="nt-cue">⏱ 79:00–83:00 (4分) · DEMO ⑥ 4分 · DEMO ⑤ のセッションを<ruby class="fu">続<rt>つづ</rt></ruby>けて<ruby class="fu">使<rt>つか</rt></ruby>う (context が<ruby class="fu">溜<rt>た</rt></ruby>まっている) → /context → subagent → /context → /compact → /context</div>
+<div class="nt-cue">⏱ 79:00–83:00 (4分) · DEMO ⑥ 4分 · DEMO ⑤ のセッションを<ruby class="fu">続<rt>つづ</rt></ruby>けて<ruby class="fu">使<rt>つか</rt></ruby>う · <ruby class="fu">別<rt>べつ</rt></ruby>ターミナルで ./demo/go.sh 6 (6a /context をコピー) → c 6b → c 6c → subagent → /context → /compact → /context</div>
 <div class="nt-jp">さっきのセッションを、そのまま<ruby class="fu">使<rt>つか</rt></ruby>います。もう、かなり<ruby class="fu">作業<rt>さぎょう</rt></ruby>しました。
 /context で、<ruby class="fu">机<rt>つくえ</rt></ruby>の<ruby class="fu">上<rt>うえ</rt></ruby>を<ruby class="fu">見<rt>み</rt></ruby>てみます。
 
