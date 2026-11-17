@@ -1,0 +1,275 @@
+<!-- ===================== E. CONTEXT / TOKEN ===================== -->
+
+<section class="slide divider" id="s-divE" data-title="E: Context管理" data-part="E. Context · Token (91–109')">
+  <div class="big">E</div>
+  <h1 class="ja">Context管理 · Token最適化</h1>
+  <div class="q ja">Context は <span class="hl">作業机</span>。<br>広くても、ちらかると仕事ができない。</div>
+  <div class="map ja"><span>A Loop</span><span>B Guardrails</span><span>C Process</span><span>D Quality</span><span class="now">E Context</span><span>F 概要</span></div>
+<aside class="notes">
+<div class="nt-cue">⏱ 91:00–91:30</div>
+<div class="nt-jp">パートEです。コンテキストとトークンの話です。
+コンテキストは「作業机」だと思ってください。
+机が広くても、散らかっていると、仕事ができません。</div>
+<div class="nt-vi">VN: Khối E. Context = mặt bàn làm việc; rộng mà bừa thì vẫn không làm được.</div>
+</aside>
+</section>
+
+<section class="slide" id="s-ctx-what" data-title="Contextの中身" data-part="E. Context · Token (91–109')">
+  <h1 class="t ja">Context の中身は、<span class="r">ほとんどツールの結果</span></h1>
+  <svg class="brush"><use href="#brush"/></svg>
+  <div class="ctxbar mt2 ja">
+    <div style="width:6%;background:var(--c-model)">sys</div>
+    <div style="width:5%;background:#8f6fd0">MD</div>
+    <div style="width:8%;background:#c48a3c">tools</div>
+    <div style="width:9%;background:var(--c-user)">会話</div>
+    <div style="width:57%;background:var(--c-ok)">tool results (ファイル · ログ · テスト出力)</div>
+    <div style="width:15%;background:#ddd5c3;color:var(--mute)">空き</div>
+  </div>
+  <div class="m ja s22" style="margin-top:6px">※ 長めのコーディングセッションのイメージ</div>
+  <div class="grid3 mt2 ja">
+    <div class="box frag" data-f="1"><h3>有限</h3><span class="s32">大きな window でも<br><b>注意力 (attention) は有限</b></span></div>
+    <div class="box red frag" data-f="2"><h3 class="r">Context rot</h3><span class="s32">長くなるほど精度が落ちる<br><b>上限の前から</b>悪くなる</span></div>
+    <div class="box yellow frag" data-f="3"><h3 class="o">Lost in the middle</h3><span class="s32">真ん中の情報ほど<br>忘れられやすい</span></div>
+  </div>
+  <div class="chot ja frag" data-f="4">ゴール: <b>必要で、質の高いトークン</b>だけを机に置く。</div>
+  <div class="src">Anthropic Engineering, "Effective context engineering for AI agents" (2025)</div>
+<style>
+.ctxbar{display:flex;height:100px;border:3px solid var(--ink);border-radius:12px;overflow:hidden;font-size:22px}
+.ctxbar div{display:flex;align-items:center;justify-content:center;color:#fff;white-space:nowrap;overflow:hidden;border-right:2px solid rgba(0,0,0,.25)}
+</style>
+<aside class="notes">
+<div class="nt-cue">⏱ 91:30–94:00 (2.5分) · → 4回</div>
+<div class="nt-jp">コンテキストの中身を見てみましょう。
+システムプロンプト、CLAUDE.md、ツールの定義、会話。
+でも、一番大きいのは<b>ツールの結果</b>です。ファイルの中身、ログ、テストの出力。長いセッションでは、半分以上がこれです。
+
+【→】大事なこと。ウィンドウが大きくなっても、注意力は有限です。
+【→】Context rot。コンテキストが長くなるほど、精度が落ちます。しかも、上限に届く前から落ちます。
+【→】Lost in the middle。真ん中にある情報ほど、忘れられやすいです。
+
+【→】だからゴールは、「全部入れる」ではなく、<b>必要最小限の、質の高いトークン</b>だけを机に置くことです。</div>
+<div class="nt-vi">VN: Phần lớn context là tool result. Attention hữu hạn; context rot (dài → kém đi, kể cả trước giới hạn); lost in the middle. Mục tiêu: chỉ đặt lượng token tối thiểu, chất lượng cao.</div>
+</aside>
+</section>
+
+<section class="slide" id="s-compact" data-title="Compaction アニメーション" data-part="E. Context · Token (91–109')" data-steps="6" style="padding:40px 60px">
+  <div class="row mid" style="gap:20px;margin-bottom:12px">
+    <h1 class="ja" style="font-size:44px">机が埋まったら: <span class="g">Compaction</span></h1>
+  </div>
+  <div class="dk grow">
+    <div class="stepbar"></div>
+    <div class="cw" id="cw-win"></div>
+    <div class="cw-scale"><span>100%</span><span>75%</span><span>50%</span><span>25%</span><span>0</span></div>
+    <div class="cw-tok" id="cw-tok"></div>
+    <div class="cw-info ja">
+      <div class="dkt" id="cw-phase"></div>
+      <div id="cw-text" style="font-size:28px;line-height:1.55;margin-top:10px"></div>
+      <div class="cw-legend"><span style="--c:var(--c-user)">user</span><span style="--c:var(--c-model)">assistant</span><span style="--c:var(--c-ok)">tool result</span><span style="--c:var(--c-tool)">summary</span></div>
+    </div>
+  </div>
+<style>
+#s-compact .cw{position:absolute;left:70px;top:40px;width:230px;height:560px;border:2px solid var(--dkline);border-radius:12px;display:flex;flex-direction:column-reverse;gap:3px;padding:6px;overflow:hidden;background:#101114}
+#s-compact .cw .blk{border-radius:4px;transition:all .6s ease;flex:none;font:12px var(--mono);color:rgba(255,255,255,.85);display:flex;align-items:center;padding-left:6px}
+#s-compact .cw .blk.squash{opacity:.55}
+#s-compact .cw .lim{position:absolute;left:0;right:0;border-top:3px dashed var(--c-bad);z-index:2}
+#s-compact .cw-scale{position:absolute;left:310px;top:40px;height:560px;display:flex;flex-direction:column;justify-content:space-between;font:14px var(--mono);color:var(--dkmute)}
+#s-compact .cw-tok{position:absolute;left:70px;top:612px;width:230px;text-align:center;font:400 34px var(--title);color:#fff}
+#s-compact .cw-info{position:absolute;left:420px;right:40px;top:50px;color:var(--dktx)}
+#s-compact .cw-info b{color:var(--c-tool);font-weight:600}
+#s-compact .cw-legend{margin-top:30px;display:flex;gap:18px;font:16px var(--mono);color:var(--dkmute)}
+#s-compact .cw-legend span::before{content:"";display:inline-block;width:14px;height:14px;border-radius:3px;background:var(--c);margin-right:6px;vertical-align:-2px}
+</style>
+<aside class="notes">
+<div class="nt-cue">⏱ 94:00–97:00 (3分) · → 6回</div>
+<div class="nt-jp">コンテキストが埋まっていく様子を見てみます。左の箱がコンテキストウィンドウです。
+
+【→】作業を始めると、ユーザー、アシスタント、ツールの結果が積み上がります。緑がツールの結果です。
+【→】ファイルを読んで、テストを回して……どんどん増えます。
+【→】8割を超えました。ここで精度が落ち始めます。
+
+【→】1つ目の手、<b>micro-compact</b>。古いツールの結果を消します。
+ファイルの中身は、必要ならもう一度読めばいいので、消しても安全です。
+
+【→】でも、また埋まってきます。
+
+【→】2つ目の手、<b>auto-compact</b>。会話全体を要約して、要約だけを残します。
+注意点があります。要約すると、細かい数字や決定が消えることがあります。
+だから「この決定と、失敗したテスト名は必ず残して」と、<b>何を残すかを指示する</b>のがコツです。
+もっと良いのは、大事なことは最初から<b>ファイルに書いておく</b>ことです。</div>
+<div class="nt-vi">VN: Animation cửa sổ context: đầy dần (tool result chiếm nhiều) → >80% chất lượng giảm → micro-compact (xoá tool result cũ, đọc lại được) → lại đầy → auto-compact (tóm tắt). Lưu ý tóm tắt làm mất số liệu/quyết định → dặn rõ cần giữ gì; tốt hơn nữa là ghi điều quan trọng ra file từ đầu.</div>
+</aside>
+</section>
+
+<section class="slide" id="s-4strat" data-title="4つの戦略" data-part="E. Context · Token (91–109')">
+  <h1 class="t ja">Context 管理の <span class="g">4つの戦略</span></h1>
+  <svg class="brush"><use href="#brush"/></svg>
+  <div class="grid4 mt ja" style="gap:18px;grid-template-columns:repeat(4,minmax(0,1fr))">
+    <div class="st4 frag" data-f="1" style="--c:var(--c-tool)"><div class="ic">✍️</div><b>Write</b><i>外に書く</i><span>計画 · 進捗 · 決定を<br><b>ファイル</b>に<br><code>progress.md</code><br><code>tasks.md</code></span></div>
+    <div class="st4 frag" data-f="2" style="--c:var(--c-ctx)"><div class="ic">🔎</div><b>Select</b><i>必要な時に選ぶ</i><span>全部読ませない<br>grep · glob · LSP で<br><b>必要な所だけ</b><br>Skills は必要な時だけ読む</span></div>
+    <div class="st4 frag" data-f="3" style="--c:var(--c-ok)"><div class="ic">🗜️</div><b>Compress</b><i>小さくする</i><span>古い tool result を消す<br>要約 (compact)<br><b>残す物を指示</b></span></div>
+    <div class="st4 frag" data-f="4" style="--c:var(--c-model)"><div class="ic">📦</div><b>Isolate</b><i>分ける</i><span>調査は <b>subagent</b> で<br>結果は要約だけ<br>タスクごとに <code>/clear</code></span></div>
+  </div>
+  <div class="chot ja frag" data-f="5">強いエージェントは、<b>4つ全部</b>を組み合わせている。</div>
+<style>
+.st4{border:3px solid var(--c);border-radius:var(--wob);background:#fffdf7;padding:20px 20px 24px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;min-height:430px}
+.st4 .ic{font-size:56px} .st4>b{font:400 42px var(--title);color:var(--ink)} .st4 i{font-style:normal;font-size:22px;color:var(--mute)}
+.st4 span{font-size:24px;line-height:1.55;margin-top:8px} .st4 code{font-size:19px}
+</style>
+<aside class="notes">
+<div class="nt-cue">⏱ 97:00–99:30 (2.5分) · → 5回</div>
+<div class="nt-jp">コンテキスト管理には、4つの戦略があります。
+
+【→】Write、外に書く。計画、進捗、決定をファイルに書きます。さっきの Ralph Loop や feature list もこれです。
+【→】Select、必要な時に選ぶ。リポジトリ全部を読ませません。grep や LSP で、必要な所だけ読みます。Skills も、必要になった時だけ読み込みます。
+【→】Compress、圧縮する。古いツールの結果を消す。要約する。何を残すか指示する。
+【→】Isolate、分ける。調査は subagent に任せて、要約だけ受け取る。タスクが変わったら /clear。
+
+【→】うまくいっているエージェントは、この4つを全部組み合わせています。</div>
+<div class="nt-vi">VN: 4 chiến lược: Write (ghi ra file: plan/progress/quyết định), Select (chỉ đọc phần cần: grep/glob/LSP, skills nạp khi cần), Compress (xoá tool result cũ, tóm tắt có chỉ định giữ gì), Isolate (subagent điều tra trả tóm tắt, /clear giữa các task). Agent tốt kết hợp cả 4.</div>
+</aside>
+</section>
+
+<section class="slide" id="s-subagent" data-title="Subagent で分離" data-part="E. Context · Token (91–109')" data-steps="4" style="padding:40px 60px">
+  <div class="row mid" style="gap:20px;margin-bottom:12px">
+    <h1 class="ja" style="font-size:44px">Isolate: 調査は <span class="g">subagent</span> に</h1>
+    <span class="m ja s24">例:「返金処理はどこで呼ばれている？」</span>
+  </div>
+  <div class="dk grow">
+    <div class="stepbar"></div>
+    <div class="sa-col" style="left:60px"><div class="dkt">main agent</div><div class="sa-win" id="sa-main"></div><div class="sa-n" id="sa-main-n"></div></div>
+    <div class="sa-col" style="left:900px"><div class="dkt">subagent (別 context)</div><div class="sa-win" id="sa-sub"></div><div class="sa-n" id="sa-sub-n"></div></div>
+    <div class="sa-arrow st ja" data-at="1-2" style="top:180px">「調べて、要点だけ返して」 →</div>
+    <div class="sa-arrow st ja" data-at="3-" style="top:330px;color:var(--c-ok)">← 要約 1.5k tokens</div>
+    <div class="ja st" data-at="4" style="position:absolute;left:60px;right:60px;bottom:24px;text-align:center;font-size:28px;color:#fff">
+      main の机は<b style="color:var(--c-ok)">きれいなまま</b>。subagent の 30k は<b style="color:var(--c-bad)">捨てる</b>。</div>
+  </div>
+<style>
+#s-subagent .sa-col{position:absolute;top:30px;width:420px}
+#s-subagent .sa-win{height:440px;border:2px solid var(--dkline);border-radius:12px;background:#101114;margin-top:8px;display:flex;flex-direction:column-reverse;padding:6px;gap:3px;overflow:hidden;transition:opacity .5s}
+#s-subagent .sa-win.gone{opacity:.15}
+#s-subagent .sa-win .blk{border-radius:4px;flex:none;font:13px var(--mono);color:rgba(255,255,255,.88);display:flex;align-items:center;padding-left:8px;animation:popin .35s ease}
+#s-subagent .sa-n{text-align:center;font:400 32px var(--title);margin-top:8px;color:#fff}
+#s-subagent .sa-arrow{position:absolute;left:500px;width:380px;text-align:center;font-size:24px;color:var(--c-tool)}
+</style>
+<aside class="notes">
+<div class="nt-cue">⏱ 99:30–101:30 (2分) · → 4回</div>
+<div class="nt-jp">Isolate の例です。「返金処理はどこで呼ばれているか調べて」というタスク。
+左がメインのエージェント。今は机がきれいです。
+
+【→】メインは、subagent に「調べて、要点だけ返して」と頼みます。
+【→】subagent は、別のコンテキストで、ファイルをたくさん読みます。3万トークンくらい使います。
+【→】でも、メインに返すのは、要約の1,500トークンだけです。
+【→】メインの机は、きれいなままです。subagent の3万トークンは、捨てます。
+
+調査、ログ解析、大きなファイルの読み込み。こういう「たくさん読むけど、結論は短い」仕事に向いています。</div>
+<div class="nt-vi">VN: Subagent: main giao "điều tra, chỉ trả ý chính"; subagent đọc ~30k token trong context riêng, trả ~1.5k tóm tắt; context main vẫn sạch, 30k bị bỏ. Hợp với việc đọc nhiều – kết luận ngắn (điều tra, phân tích log).</div>
+</aside>
+</section>
+
+<section class="slide" id="s-claudemd-research" data-title="CLAUDE.md は効くのか" data-part="E. Context · Token (91–109')">
+  <h1 class="t ja">CLAUDE.md / AGENTS.md は<span class="o">効く</span>のか？</h1>
+  <svg class="brush"><use href="#brush"/></svg>
+  <div class="row mt2" style="gap:30px;align-items:stretch">
+    <div class="box red ja grow frag" data-f="1"><h3 class="r">AIに自動生成させた</h3><div style="font:400 64px var(--title)" class="r">成功率 ↓</div><span class="s24">しかもコスト <b>+20% 以上</b><br>不要な探索が増える</span></div>
+    <div class="box green ja grow frag" data-f="2"><h3 class="g">人が書いた</h3><div style="font:400 64px var(--title)" class="g">少し ↑ <span class="s32">(約4%)</span></div><span class="s24">でも、大きな差ではない</span></div>
+    <div class="box ja grow frag" data-f="3"><h3>別の研究 (2026)</h3><div style="font:400 64px var(--title)">± 0</div><span class="s24">正解率は変わらず<br>失敗の原因は「知識不足」ではない</span></div>
+  </div>
+  <div class="chot ja frag" data-f="4">CLAUDE.md は魔法ではない。<b>短く · 人が書く · AIが分からないことだけ</b>。</div>
+  <div class="src">ETH Zurich ほか "Evaluating AGENTS.md" (arXiv 2602.11988, 2026) · Khatri, REALM 2026 (arXiv 2607.27250, 17 tasks) — いずれも小規模・初期の研究</div>
+<aside class="notes">
+<div class="nt-cue">⏱ 101:30–103:30 (2分) · → 4回</div>
+<div class="nt-jp">CLAUDE.md や AGENTS.md の運用についてのご質問がありました。
+まず、面白い研究結果を紹介します。2026年の研究です。
+
+【→】AIに自動で作らせた CLAUDE.md は、成功率が<b>下がりました</b>。しかもコストは20%以上増えました。余計な探索が増えるからです。
+【→】人が書いたものは、少し上がりました。約4%。でも、大きな差ではありません。
+【→】別の研究では、正解率はほとんど変わりませんでした。失敗の原因は、知識が足りないことではなかった、と。
+
+ただし、どちらも小さい、初期の研究です。
+
+【→】私の結論はこうです。CLAUDE.md は魔法ではありません。
+<b>短く。人が書く。AIが分からないことだけ書く。</b></div>
+<div class="nt-vi">VN: Nghiên cứu 2026: CLAUDE.md do AI tự sinh → tỉ lệ thành công GIẢM, chi phí +20%; người viết → tăng nhẹ ~4%; nghiên cứu khác ~0. Đều là nghiên cứu nhỏ. Kết luận: ngắn, người viết, chỉ ghi điều AI không tự suy ra.</div>
+</aside>
+</section>
+
+<section class="slide" id="s-claudemd" data-title="CLAUDE.md の書き方と運用" data-part="E. Context · Token (91–109')">
+  <h1 class="t ja">CLAUDE.md: 書くこと · 書かないこと</h1>
+  <svg class="brush"><use href="#brush"/></svg>
+  <div class="row mt" style="gap:24px;align-items:flex-start">
+    <pre class="code" style="width:780px;font-size:21px;line-height:1.6"><span class="c jp"># CLAUDE.md (ec-demo, 28行)</span>
+<span class="b">## コマンド</span>
+<span class="jp">- テスト: npm test   - Lint: npm run lint</span>
+<span class="b">## ルール</span>
+<span class="jp">- 金額は常に<span class="y">整数の円</span>。float · toFixed 禁止</span>
+<span class="jp">- 現在時刻は <span class="y">clock()</span> から。Date.now() 直接禁止</span>
+<span class="jp">- 業務ルールは docs/business-rules.md が正</span>
+<span class="b">## 人間の承認が必要</span>
+<span class="jp">- src/payment/ · business-rules.md は変更しない</span>
+<span class="jp">- <span class="p">テストを編集 · 削除 · skip して通さない</span></span>
+<span class="b">## 迷ったら</span>
+<span class="jp">- <span class="o">TBD のルールは勝手に決めず、止まって質問</span></span></pre>
+    <div class="col grow ja">
+      <div class="box green frag" data-f="1"><b class="g">✔ 書く</b><br><span class="s24">コマンド · プロジェクト独自の約束<br>禁止事項 · 判断に迷う時の行動</span></div>
+      <div class="box red frag" data-f="2"><b class="r">✘ 書かない</b><br><span class="s24">ディレクトリの一覧 · どこでも同じ話<br>(「きれいなコードを」) · 長い説明</span></div>
+      <div class="box blue frag" data-f="3"><b class="b">運用</b><br><span class="s24">リポジトリに置いて <b>PRでレビュー</b><br>失敗したら<b>1行足す</b> · 古い行は消す<br>場所: root / サブフォルダ / 個人</span></div>
+    </div>
+  </div>
+<aside class="notes">
+<div class="nt-cue">⏱ 103:30–106:00 (2.5分) · → 3回</div>
+<div class="nt-jp">では、どう書くか。左はデモのリポジトリの CLAUDE.md です。28行だけです。
+コマンド、ルール、人の承認が必要なこと、迷った時の行動。
+
+【→】書くことは、コマンド、そのプロジェクト独自の約束、禁止事項、そして迷った時にどうするか。
+【→】書かないことは、ディレクトリの一覧。AIは自分で見られます。「きれいなコードを書いて」のような一般論。そして長い説明です。
+
+【→】運用です。CLAUDE.md はリポジトリに置いて、普通のコードと同じように<b>PRでレビュー</b>します。
+AIが失敗したら、1行足す。古くなった行は消す。
+大きいプロジェクトでは、ルート、サブフォルダ、個人用と、階層に分けます。
+1人に頼らないためにも、これが一番効きます。</div>
+<div class="nt-vi">VN: CLAUDE.md mẫu 28 dòng: lệnh, quy ước riêng, điều cấm, cách xử lý khi phân vân. Không ghi: liệt kê thư mục, lời khuyên chung chung, giải thích dài. Vận hành: để trong repo, review qua PR, AI sai thì thêm 1 dòng, xoá dòng cũ; phân cấp root/thư mục con/cá nhân → chống phụ thuộc cá nhân.</div>
+</aside>
+</section>
+
+<section class="slide" id="s-token" data-title="トークンを抑える工夫" data-part="E. Context · Token (91–109')">
+  <h1 class="t ja">精度とコスト、<span class="g">両方</span>を見る</h1>
+  <svg class="brush"><use href="#brush"/></svg>
+  <div class="row mt" style="gap:30px;align-items:flex-start">
+    <div class="col grow ja" style="gap:10px">
+      <div class="tk2 frag" data-f="1"><code>/clear</code><span>タスクが変わったら机を片付ける</span></div>
+      <div class="tk2 frag" data-f="1"><code>/compact</code><span>「○○は残して」と<b>指示付き</b>で</span></div>
+      <div class="tk2 frag" data-f="2"><code>cache</code><span>先頭 (system · CLAUDE.md) を<b>あまり変えない</b> → prompt cache が効く</span></div>
+      <div class="tk2 frag" data-f="3"><code>model</code><span>簡単な作業は小さいモデル · 難しい設計は大きいモデル</span></div>
+      <div class="tk2 frag" data-f="4"><code>output</code><span>ツールの出力を短くする (<code>grep</code> · <code>head</code> · 失敗だけ表示)</span></div>
+      <div class="tk2 frag" data-f="5"><code>MCP</code><span>使うものだけ有効に (定義だけで context を使う)</span></div>
+      <div class="tk2 frag" data-f="6"><code>/usage</code><span>まず<b>見る</b>。どこで使っているか</span></div>
+    </div>
+    <div class="col ja" style="width:470px">
+      <div class="box yellow frag" data-f="7"><h3>考え方</h3><span class="s24">安いモデルで3回やり直し<br>＞ 高いモデルで1回？<br>→ <b>「マージされたPR 1本あたり」</b>で比べる</span></div>
+      <div class="box red frag" data-f="8"><span class="s24">トークンを減らして<br>失敗が増えたら<b class="r">逆に高い</b></span></div>
+    </div>
+  </div>
+<style>
+.tk2{display:flex;align-items:center;gap:18px;font-size:26px;border-bottom:1.5px dashed #c9bfa8;padding:6px 0}
+.tk2>code{flex:none;width:150px;font-size:22px;background:var(--ink);color:var(--yellow);padding:3px 10px;border-radius:6px;text-align:center}
+.tk2 span code{font-size:20px}
+</style>
+<aside class="notes">
+<div class="nt-cue">⏱ 106:00–108:30 (2.5分) · → 8回 → Q&amp;A</div>
+<div class="nt-jp">最後に、トークンを抑える工夫です。
+
+【→】/clear。タスクが変わったら、机を片付けます。/compact は、何を残すか指示して使います。
+【→】キャッシュ。プロンプトの先頭、system や CLAUDE.md をあまり変えないと、キャッシュが効いて安くなります。
+【→】モデルの使い分け。簡単な作業は小さいモデル、難しい設計は大きいモデル。
+【→】ツールの出力を短くする。テストの出力は、失敗だけ表示する、など。
+【→】MCP は、使うものだけ有効にします。ツールの定義だけで、コンテキストを使うからです。
+【→】そして、まず見ること。どこでトークンを使っているか。
+
+【→】考え方です。安いモデルで3回やり直すのと、高いモデルで1回。どちらが安いでしょうか。
+答えは「マージされたPR 1本あたり」のコストで比べないと分かりません。
+【→】トークンを減らして、失敗が増えたら、逆に高くなります。<b>精度とコストは、セットで測ります。</b>
+
+ここまでで質問はありますか？</div>
+<div class="nt-vi">VN: Mẹo token: /clear khi đổi task; /compact có chỉ định; giữ phần đầu prompt ổn định để cache; model nhỏ cho việc dễ; rút gọn output tool; chỉ bật MCP cần dùng; /usage để xem. So sánh chi phí theo "mỗi PR được merge"; cắt token mà fail nhiều hơn thì đắt hơn. Mở Q&A.</div>
+</aside>
+</section>

@@ -1,0 +1,52 @@
+{
+  "_meta": {
+    "approvedBy": "プロダクトオーナー (架空) / Human approved",
+    "approvedAt": "2026-11-10",
+    "note": "人間が手計算で確認した期待値。AIエージェントは期待値を変更してはいけない (Do not edit to make tests pass)",
+    "now": "2026-11-17T10:00:00+09:00"
+  },
+  "cases": [
+    {
+      "id": "G-01",
+      "description": "クーポンなし・基本",
+      "lines": [{ "sku": "TEA-001", "qty": 2 }, { "sku": "MUG-002", "qty": 1 }],
+      "coupon": null,
+      "expected": { "subtotal": 4540, "discount": 0, "tax": 454, "total": 4994 }
+    },
+    {
+      "id": "G-02",
+      "description": "消費税は合計で切り捨て (行ごとなら 58円)",
+      "lines": [{ "sku": "CANDY-005", "qty": 1 }, { "sku": "SOAP-006", "qty": 1 }],
+      "coupon": null,
+      "expected": { "subtotal": 596, "discount": 0, "tax": 59, "total": 655 }
+    },
+    {
+      "id": "G-03",
+      "description": "10%クーポン (最低3,000円)",
+      "lines": [{ "sku": "RICE-004", "qty": 1 }, { "sku": "MUG-002", "qty": 1 }, { "sku": "TEA-001", "qty": 1 }],
+      "coupon": { "code": "AUTUMN10", "type": "percent", "value": 10, "minSubtotal": 3000, "expiresAt": "2026-12-31T23:59:59+09:00" },
+      "expected": { "subtotal": 6260, "discount": 626, "tax": 563, "total": 6197 }
+    },
+    {
+      "id": "G-04",
+      "description": "500円引きクーポン (最低2,000円)",
+      "lines": [{ "sku": "TOWEL-003", "qty": 1 }],
+      "coupon": { "code": "WELCOME500", "type": "fixed", "value": 500, "minSubtotal": 2000, "expiresAt": "2026-12-31T23:59:59+09:00" },
+      "expected": { "subtotal": 2500, "discount": 500, "tax": 200, "total": 2200 }
+    },
+    {
+      "id": "G-05",
+      "description": "割引が小計を超えても合計は0円 (マイナスにしない)",
+      "lines": [{ "sku": "CANDY-005", "qty": 1 }],
+      "coupon": { "code": "BIG1000", "type": "fixed", "value": 1000, "minSubtotal": 0, "expiresAt": "2026-12-31T23:59:59+09:00" },
+      "expected": { "subtotal": 198, "discount": 198, "tax": 0, "total": 0 }
+    },
+    {
+      "id": "G-06",
+      "description": "15%クーポン: 割引 179.1→179, 税 101.5→101",
+      "lines": [{ "sku": "SOAP-006", "qty": 3 }],
+      "coupon": { "code": "SOAP15", "type": "percent", "value": 15, "minSubtotal": 1000, "expiresAt": "2026-12-31T23:59:59+09:00" },
+      "expected": { "subtotal": 1194, "discount": 179, "tax": 101, "total": 1116 }
+    }
+  ]
+}

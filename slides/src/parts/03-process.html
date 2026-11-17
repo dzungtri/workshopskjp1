@@ -1,0 +1,365 @@
+<!-- ===================== C. PROCESS: TASKS / DAG / LOOP ===================== -->
+
+<section class="slide divider" id="s-divC" data-title="C: 開発プロセス" data-part="C. 開発プロセス (45–68')">
+  <div class="big">C</div>
+  <h1 class="ja">エージェント前提の開発プロセス</h1>
+  <div class="q ja">「返品機能を作って」と<span class="hl">全部まかせる</span>と、何が起きる？</div>
+  <div class="map ja"><span>A Loop</span><span>B Guardrails</span><span class="now">C Process</span><span>D Quality</span><span>E Context</span><span>F 概要</span></div>
+<aside class="notes">
+<div class="nt-cue">⏱ 45:00–45:30</div>
+<div class="nt-jp">パートCです。エージェントを前提にした、開発プロセスの話です。
+「返品機能を作って」と一言で全部まかせると、何が起きるでしょうか。
+……だいたい、動くけど、レビューできない、大きな PR が出てきます。</div>
+<div class="nt-vi">VN: Khối C. Giao khoán "làm chức năng trả hàng" → ra PR khổng lồ, chạy được nhưng không review nổi.</div>
+</aside>
+</section>
+
+<section class="slide" id="s-sdd" data-title="Spec → Tasks → Implement" data-part="C. 開発プロセス (45–68')">
+  <h1 class="t ja">いきなり Code ではなく、<span class="g">Spec</span> から</h1>
+  <svg class="brush"><use href="#brush"/></svg>
+  <div class="sdd mt2 ja">
+    <div class="sd frag" data-f="1"><span class="num">1</span><b>Spec</b><small>何を · なぜ<br>業務ルール · 例</small><code>spec.md</code></div>
+    <div class="gate frag" data-f="2">👤<br>人</div>
+    <div class="sd frag" data-f="3"><span class="num">2</span><b>Plan</b><small>どう作る<br>設計 · interface</small><code>plan.md</code></div>
+    <div class="ar frag" data-f="3">→</div>
+    <div class="sd frag" data-f="4"><span class="num">3</span><b>Tasks</b><small>1回分のチケット<br>依存関係</small><code>tasks.md</code></div>
+    <div class="gate frag" data-f="4">👤<br>人</div>
+    <div class="sd frag" data-f="5" style="border-color:var(--c-tool)"><span class="num orange">4</span><b>Implement</b><small>エージェントが<br>ループで実装</small><code>PR</code></div>
+    <div class="ar frag" data-f="5">→</div>
+    <div class="sd frag" data-f="6" style="border-color:var(--green)"><span class="num">5</span><b>Verify</b><small>テスト · CI<br>レビュー</small><code>exit 0</code></div>
+    <div class="gate frag" data-f="6">👤<br>人</div>
+  </div>
+  <div class="row mt2 ja" style="gap:26px">
+    <div class="box yellow grow frag" data-f="7"><b>あいまいな所は、最初になくす</b><br><span class="s32">Spec の1行 = 実装の100行。<br>返品の「8日」が書いていなければ、AIが決める。</span></div>
+    <div class="box grow frag" data-f="8"><b>ツール例</b><br><span class="s32">GitHub Spec Kit · Kiro · 自作の Markdown テンプレート<br>— 形より「人が確認するチェックポイント」が大事</span></div>
+  </div>
+<style>
+.sdd{display:flex;align-items:stretch;justify-content:center;gap:8px}
+.sdd .sd{width:236px;min-height:300px;border:2.5px solid var(--ink);border-radius:var(--wob);background:#fffdf7;padding:24px 14px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px}
+.sdd .sd b{font:400 40px var(--title)} .sdd .sd small{font-size:24px;color:var(--ink2);line-height:1.4} .sdd .sd code{font-size:18px;color:var(--mute);margin-top:auto}
+.sdd .gate{align-self:center;font-size:20px;text-align:center;color:var(--red);line-height:1.2;border:2px dashed var(--red);border-radius:12px;padding:6px 8px;background:rgba(243,217,211,.4)}
+.sdd .ar{align-self:center;font-size:36px;color:var(--mute)}
+</style>
+<aside class="notes">
+<div class="nt-cue">⏱ 45:30–48:00 (2.5分) · → 8回</div>
+<div class="nt-jp">おすすめの流れです。いきなりコードではなく、Spec から始めます。
+
+【→】まず Spec。何を作るか、なぜ作るか。業務ルールと、具体例を書きます。
+【→】ここで人が確認します。一番大事なチェックポイントです。
+【→】次に Plan。どう作るか。設計と interface。
+【→】そして Tasks。エージェント1回分のチケットに分けます。依存関係も書きます。ここでも人が確認します。
+【→】ここからやっと、エージェントがループで実装します。
+【→】最後に Verify。テスト、CI、そして人のレビュー。
+
+【→】ポイントは、<b>あいまいな所は、最初になくす</b>こと。
+Spec の1行は、実装の100行に相当します。返品の「8日」が書いていなければ、AIが決めてしまいます。
+
+【→】ツールは、GitHub Spec Kit や Kiro、または自分たちの Markdown テンプレートでもいいです。
+形より、<b>人が確認するチェックポイント</b>があることが大事です。</div>
+<div class="nt-vi">VN: Spec → (người duyệt) → Plan → Tasks → (người duyệt) → Implement (agent loop) → Verify (người). Loại bỏ mơ hồ ở thượng nguồn: 1 dòng spec = 100 dòng code. Tool: Spec Kit, Kiro, template Markdown — quan trọng là có "cửa kiểm duyệt của người".</div>
+</aside>
+</section>
+
+<section class="slide" id="s-ticket" data-title="チケットの大きさ" data-part="C. 開発プロセス (45–68')">
+  <h1 class="t ja">良いチケット = <span class="g">エージェント1回分</span></h1>
+  <svg class="brush"><use href="#brush"/></svg>
+  <div class="row mt" style="gap:26px;align-items:flex-start">
+    <div class="col" style="width:440px">
+      <div class="box red ja"><h3 class="r">✘ 悪い例</h3>
+        <div class="paper ja" style="font-size:26px">「返品機能を追加して。<br>いい感じに。」</div>
+        <ul class="clean s24 mt3"><li class="xx">どこまで？ 何を触る？</li><li class="xx">終わりの基準がない</li><li class="xx">8日？ 開封済み？ → AIが決める</li><li class="xx">PR 2,000行 → レビューできない</li></ul></div>
+    </div>
+    <div class="col grow">
+      <div class="box green ja frag" data-f="1"><h3 class="g">✔ 良い例 <span class="mono m s22">T2: 返品できるかのルール</span></h3>
+<pre class="code" style="font-size:21px;line-height:1.75;background:#2b2a26"><span class="k jp">目的:</span>      <span class="jp">BR-09 (8日以内), BR-10 (開封・使用済は不可) の判定</span>
+<span class="k jp">触ってよい:</span> src/returns/return-service.js, test/returns.test.js
+<span class="k jp">受入条件:</span>  node --test test/returns.test.js   <span class="c jp"># 8日ちょうど=可, 8日12時間=不可</span>
+           npm test &amp;&amp; npm run lint
+           git diff --name-only <span class="c jp"># 許可ファイル以外を変更していない</span>
+<span class="k jp">未決定:</span>    <span class="jp">TBD-01 タイムゾーン境界 → <span class="o">勝手に決めず質問</span></span>
+<span class="k jp">依存:</span>      <span class="jp">なし (並列可)</span></pre></div>
+      <div class="row ja frag" data-f="2" style="gap:12px;flex-wrap:wrap;font-size:27px">
+        <span class="pill g">1セッション · 1 PR</span><span class="pill g">変更ファイル 1–3</span><span class="pill g">差分 ~200行</span><span class="pill g">受入条件 = コマンド</span><span class="pill g">TBD を明記</span>
+      </div>
+    </div>
+  </div>
+  <div class="chot ja frag" data-f="3">チケットの大きさ = <b>人がレビューできる大きさ</b>。AIが作れる大きさ、ではない。</div>
+<aside class="notes">
+<div class="nt-cue">⏱ 48:00–51:00 (3分) · → 3回</div>
+<div class="nt-jp">チケットの大きさの話です。ご質問にもありました。
+
+悪い例。「返品機能を追加して。いい感じに。」
+どこまでやるのか、何を触っていいのか、いつ終わりなのか、分かりません。
+8日なのか、開封済みはどうするのか。AIが決めてしまいます。そして2,000行の PR が来ます。
+
+【→】良い例です。デモのリポジトリの、実際のチケットです。
+目的には、業務ルールの ID を書きます。
+触ってよいファイルを書きます。
+受入条件は、<b>実行できるコマンド</b>で書きます。「8日ちょうどは OK、8日と12時間は NG」というテストも指定します。
+そして、未決定のことは「勝手に決めないで質問」と書きます。
+
+【→】目安は、1セッションで1つの PR。変更ファイルは1から3つ。差分は200行くらい。
+
+【→】一番大事なのはこれです。チケットの大きさは、AIが作れる大きさではありません。
+<b>人がレビューできる大きさ</b>です。AIは2,000行でも書けます。でも人は読めません。</div>
+<div class="nt-vi">VN: Ticket tốt = 1 phiên agent: mục tiêu có ID luật, file được chạm, tiêu chí chấp nhận là LỆNH chạy được (kể cả test biên 8 ngày), TBD → hỏi, dependency. Cỡ: 1 phiên/1 PR, 1–3 file, ~200 dòng. Cỡ ticket = cỡ NGƯỜI review được, không phải cỡ AI viết được.</div>
+</aside>
+</section>
+
+<section class="slide" id="s-dag" data-title="依存関係と並列 (DAG)" data-part="C. 開発プロセス (45–68')" data-steps="6" style="padding:40px 60px">
+  <div class="row mid" style="gap:20px;margin-bottom:12px">
+    <h1 class="ja" style="font-size:44px">依存関係を<span class="g">DAG</span>にして、同時に進める</h1>
+    <span class="m ja s24">「返品機能」= 6チケット</span>
+  </div>
+  <div class="dk grow">
+    <div class="stepbar"></div>
+    <div class="dkt" style="position:absolute;left:28px;top:20px">git worktree × 3</div>
+    <div class="lane" style="top:56px"></div><div class="lane" style="top:176px"></div><div class="lane" style="top:296px"></div>
+    <svg class="wire" width="1480" height="660" style="position:absolute;left:0;top:0">
+      <path d="M380 96 C 470 96, 470 240, 560 260" data-at="hot@=3"/>
+      <path d="M380 216 C 450 216, 470 250, 560 270" data-at="hot@=3"/>
+      <path d="M380 336 C 650 336, 760 330, 860 300" data-at="hot@=4"/>
+      <path d="M780 270 H 860" data-at="hot@=4"/>
+      <path d="M1080 270 H 1160" data-at="hot@=5"/>
+    </svg>
+    <div class="node tool tk" style="left:150px;top:56px" data-at="glow@=2 done@3-"><b>T1</b><small>状態遷移</small></div>
+    <div class="node tool tk" style="left:150px;top:176px" data-at="glow@=2 done@3-"><b>T2</b><small>返品できるか</small></div>
+    <div class="node tool tk" style="left:150px;top:296px" data-at="glow@=2 done@4-"><b>T3</b><small>クーポン分の返金計算</small></div>
+    <div class="node model tk" style="left:560px;top:230px" data-at="glow@=3 done@4-"><b>T4</b><small>返品申請</small></div>
+    <div class="node model tk" style="left:860px;top:230px" data-at="glow@=4 done@5-"><b>T5</b><small>返金 (2回しない)</small></div>
+    <div class="node ok tk" style="left:1160px;top:230px" data-at="glow@=5 done@6-"><b>T6</b><small>E2E · デモ</small></div>
+    <div class="lbl st" data-at="2" style="left:420px;top:40px;color:var(--c-tool)">⚡ 3つ同時<br><small>別 worktree · 別ブランチ</small></div>
+    <div class="lbl st" data-at="3" style="left:560px;top:140px;color:var(--c-model)">merge → CI ✔<br><small>1つずつ順番に</small></div>
+    <div class="lbl st" data-at="5" style="left:1160px;top:140px;color:var(--c-ok)">✔ 完成</div>
+    <pre class="st" data-at="1" style="position:absolute;left:28px;bottom:20px;margin:0;font:18px/1.6 var(--mono);color:#cfd3dc;background:var(--dk2);padding:12px 18px;border-radius:10px">git worktree add ../ec-T1 -b feat/T1 main
+git worktree add ../ec-T2 -b feat/T2 main
+git worktree add ../ec-T3 -b feat/T3 main</pre>
+    <div class="ja st" data-at="6" style="position:absolute;right:28px;bottom:24px;width:700px;font-size:25px;line-height:1.55;color:#fff">
+      ✔ 同じファイルを触らないものだけ同時に<br>✔ 先に <b style="color:var(--c-tool)">interface</b> を決める (T1 → T4)<br>✔ <b style="color:var(--c-ok)">同時に進める数 = レビューできる数まで</b></div>
+  </div>
+<style>
+#s-dag .tk{width:230px;height:100px} #s-dag .tk b{font-size:32px} #s-dag .tk small{font-size:19px}
+#s-dag .tk.done{border-color:var(--c-ok);background:#163327}
+#s-dag .tk.done::after{content:"✔";position:absolute;right:10px;top:6px;color:var(--c-ok);font-size:20px}
+#s-dag .lane{position:absolute;left:130px;width:270px;height:110px;border:1.5px dashed var(--dkline);border-radius:14px}
+#s-dag .lbl{position:absolute;font-size:22px;line-height:1.25;font-family:var(--jp)}
+#s-dag .lbl small{font-size:16px;color:var(--dkmute)}
+</style>
+<aside class="notes">
+<div class="nt-cue">⏱ 51:00–54:30 (3.5分) · → 6回</div>
+<div class="nt-jp">次は、タスク間の依存関係です。
+「返品機能」を6つのチケットに分けました。
+
+【→】T1、T2、T3 はお互いに独立しています。触るファイルも違います。
+だから git worktree で、別々のフォルダ、別々のブランチを作ります。
+
+【→】3つのエージェントが同時に動きます。
+
+【→】T1 と T2 が終わったら、マージします。ここでCIを回します。マージは<b>1つずつ、順番に</b>です。
+そして T4、返品申請を始めます。
+
+【→】T3 と T4 がそろったら、T5、返金です。
+【→】最後に T6、全体の E2E テスト。完成です。
+
+【→】ルールは3つです。
+同じファイルを触らないものだけ、並列にする。
+先に interface を決める。
+そして一番大事なのは、<b>並列の数の上限は、人がレビューできる数</b>です。
+エージェントを10個動かしても、レビューが1人なら、そこで詰まります。</div>
+<div class="nt-vi">VN: DAG 6 ticket: T1/T2/T3 độc lập → chạy song song bằng git worktree; merge tuần tự từng cái + CI; T4 sau T1,T2; T5 sau T3,T4; T6 cuối. 3 quy tắc: chỉ song song khi không chạm cùng file; chốt interface trước; số luồng song song tối đa = số người review được.</div>
+</aside>
+</section>
+
+<section class="slide" id="s-loopeng" data-title="Loop Engineering" data-part="C. 開発プロセス (45–68')">
+  <h1 class="t ja">Loop Engineering = <span class="g">止まり方</span>を設計する</h1>
+  <svg class="brush"><use href="#brush"/></svg>
+  <div class="row mt" style="gap:40px;align-items:center">
+    <div style="position:relative;width:560px;height:520px" class="sketch">
+      <svg width="560" height="520" style="position:absolute;inset:0"><circle cx="280" cy="260" r="180" class="s" stroke-dasharray="14 12" style="stroke:var(--ink2)"/>
+        <path d="M455 215 l12 26 l14-22" class="s" style="stroke:var(--ink2)"/><path d="M105 305 l-12 -26 l-14 22" class="s" style="stroke:var(--ink2)"/></svg>
+      <div class="lp ja" style="left:200px;top:40px">Plan<small>何をする</small></div>
+      <div class="lp ja" style="left:380px;top:210px;border-color:var(--c-tool)">Act<small>編集 · 実行</small></div>
+      <div class="lp ja" style="left:200px;top:390px;border-color:var(--green)">Verify<small>テスト · lint</small></div>
+      <div class="lp ja" style="left:20px;top:210px;border-color:var(--red)">Fix<small>失敗を読む</small></div>
+    </div>
+    <div class="col grow ja">
+      <div class="h3 s32" style="font-family:var(--title)">止まる条件 (Stop conditions)</div>
+      <div class="box green frag" data-f="1">✔ 受入条件のコマンドが<b>全部 exit 0</b> → 完了</div>
+      <div class="box red frag" data-f="2">✖ 同じ失敗が<b>3回</b> → 止めて人へ</div>
+      <div class="box yellow frag" data-f="3">💴 回数 · 時間 · <b>トークン予算</b>を超えた → 停止</div>
+      <div class="box blue frag" data-f="4">❓ <b>TBD</b> · 権限がない操作 · 設計の判断 → 質問して待つ</div>
+    </div>
+  </div>
+<style>
+.lp{position:absolute;width:160px;height:90px;border:2.5px solid var(--ink);border-radius:var(--wob);background:#fffdf7;display:flex;flex-direction:column;align-items:center;justify-content:center;font:400 32px var(--title)}
+.lp small{font-size:18px;color:var(--mute);font-family:var(--jp)}
+</style>
+<aside class="notes">
+<div class="nt-cue">⏱ 54:30–56:30 (2分) · → 4回</div>
+<div class="nt-jp">「ループエンジニアリング」についてのご質問もありました。
+ループ自体はシンプルです。計画して、実行して、確認して、直す。これを繰り返します。
+
+大事なのは、<b>どうやって止まるか</b>を設計することです。
+
+【→】成功の止まり方。受入条件のコマンドが、全部 exit 0。
+【→】失敗の止まり方。同じ失敗が3回続いたら、止めて人に戻す。
+【→】予算の止まり方。回数、時間、トークンの上限。
+【→】そして、相談の止まり方。未決定のルール、権限の外、設計の判断。ここは質問して待ちます。
+
+止まり方が決まっていないループは、ずっと回り続けるか、ウソをついて止まります。</div>
+<div class="nt-vi">VN: Loop engineering = thiết kế cách DỪNG: thành công (mọi lệnh tiêu chí exit 0), thất bại (3 lần cùng lỗi → trả người), ngân sách (số lần/thời gian/token), hỏi (TBD, ngoài quyền, quyết định thiết kế). Không có điều kiện dừng → chạy mãi hoặc báo xong giả.</div>
+</aside>
+</section>
+
+<section class="slide" id="s-ralph" data-title="Ralph loop" data-part="C. 開発プロセス (45–68')" data-steps="4">
+  <h1 class="t ja">Ralph Loop — <span class="g">毎回 新しいセッション</span>で回す</h1>
+  <svg class="brush"><use href="#brush"/></svg>
+  <div class="row mt" style="gap:30px;align-items:flex-start">
+    <div class="col" style="width:640px">
+      <div class="term"><div class="term-bar"><i></i><i></i><i></i><span>ralph.sh</span></div>
+        <div class="term-body" style="font-size:24px;line-height:1.7"><span class="k" style="color:#a6e22e">while</span> :; <span style="color:#a6e22e">do</span><br>&nbsp;&nbsp;cat PROMPT.md | claude -p<br><span style="color:#a6e22e">done</span></div></div>
+      <div class="box ja s24 st up" data-at="3"><b>PROMPT.md の中身</b><br>
+        ① fix_plan.md から<b>1つだけ</b>選ぶ<br>② 実装 → テスト<br>③ 学んだことをファイルに書く → commit</div>
+    </div>
+    <div class="dk grow" style="height:540px">
+      <div class="dkt" style="position:absolute;left:22px;top:16px">iteration → context</div>
+      <div class="it st" data-at="1" style="top:50px"><span>#1</span><div class="bar" style="width:62%"></div><em>clear</em></div>
+      <div class="it st" data-at="1" style="top:110px"><span>#2</span><div class="bar" style="width:55%"></div><em>clear</em></div>
+      <div class="it st" data-at="1" style="top:170px"><span>#3</span><div class="bar" style="width:70%"></div><em>clear</em></div>
+      <div class="it st" data-at="1" style="top:230px"><span>#4</span><div class="bar" style="width:48%"></div><em>clear</em></div>
+      <div class="mem ja st" data-at="2"><b>記憶はファイルと git に</b><br><code>fix_plan.md</code> · <code>progress.md</code> · <code>git log</code></div>
+      <div class="ja st" data-at="4" style="position:absolute;left:22px;right:22px;bottom:18px;font-size:22px;line-height:1.5">
+        <span style="color:var(--c-ok)">◎</span> context が汚れない · 長い時間 動かせる<br>
+        <span style="color:var(--c-bad)">△</span> 計画とテストが弱いと<b style="color:var(--c-bad)">同じ間違いを繰り返す</b></div>
+    </div>
+  </div>
+  <div class="src">Geoffrey Huntley "Ralph Wiggum as a software engineer" (2025) · ※ Claude Code 公式 plugin は同一セッション内で回す方式（別物）</div>
+<style>
+#s-ralph .it{position:absolute;left:22px;right:22px;height:44px;display:flex;align-items:center;gap:14px;font:18px var(--mono);color:var(--dkmute)}
+#s-ralph .it .bar{height:22px;border-radius:6px;background:linear-gradient(90deg,var(--c-ctx),var(--c-model));opacity:.8}
+#s-ralph .it em{font-style:normal;color:var(--c-ok);font-size:15px;border:1px solid var(--c-ok);border-radius:8px;padding:0 8px}
+#s-ralph .mem{position:absolute;left:22px;right:22px;top:300px;border:2px dashed var(--c-tool);border-radius:12px;padding:12px 16px;font-size:23px;color:#fff;line-height:1.5}
+#s-ralph .mem code{color:var(--c-tool);font-size:18px}
+</style>
+<aside class="notes">
+<div class="nt-cue">⏱ 56:30–59:00 (2.5分) · → 4回</div>
+<div class="nt-jp">ループのやり方で、最近有名なのが「Ralph Loop（ラルフ・ループ）」です。
+コードはこれだけ。シェルの while ループで、同じプロンプトを何度も渡します。
+
+【→】ポイントは、毎回<b>新しいセッション</b>で始めることです。コンテキストは毎回まっさら。だから汚れません。
+
+【→】では、記憶はどこにあるか。<b>ファイルと git</b>です。
+計画のファイル、進捗のファイル、そして git log。
+
+【→】プロンプトの中身はシンプルです。計画から1つだけ選んで、実装して、テストして、学んだことを書いて、コミット。
+
+【→】良い点は、コンテキストが汚れないので、長い時間回せることです。
+悪い点は、計画とテストが弱いと、同じ間違いを何度も繰り返すことです。
+つまり、Ralph Loop も、<b>良いチケットと良いテストが前提</b>です。
+
+ちなみに、Claude Code の公式プラグインは、同じセッションの中で回す方式なので、少し違います。</div>
+<div class="nt-vi">VN: Ralph loop: while; cat PROMPT.md | claude -p; mỗi vòng context sạch; bộ nhớ nằm ở file (fix_plan, progress) + git. Ưu: không bẩn context, chạy lâu. Nhược: plan/test yếu → lặp lại cùng lỗi. Plugin chính thức chạy trong cùng session (khác bản gốc).</div>
+</aside>
+</section>
+
+<section class="slide" id="s-longrun" data-title="長時間エージェントのハーネス" data-part="C. 開発プロセス (45–68')" data-steps="5">
+  <h1 class="t ja">数時間〜数日の作業: <span class="g">進み具合をファイルに書く</span></h1>
+  <svg class="brush"><use href="#brush"/></svg>
+  <div class="row mt" style="gap:28px;align-items:flex-start">
+    <div class="col ja" style="width:560px">
+      <div class="box blue s24"><b>① Initializer (最初の1回)</b><br>要件 → <b>テストできる機能リスト</b>に分ける<br><code>feature_list.json</code> · <code>progress.txt</code> · <code>init.sh</code> · git</div>
+      <div class="box s24"><b>② 毎セッション</b><br>pwd → progress と git log を読む<br>→ 未完了で一番優先の<b>1つ</b> → テスト<br>→ <code>passes: true</code> → commit</div>
+      <div class="box yellow s22">変えてよいのは <code>passes</code> だけ。<br>項目の削除 · 書き換えは禁止 → <b>「完了」のウソがつけない</b></div>
+    </div>
+    <div class="dk grow" style="height:560px;padding:20px 24px">
+      <div class="dkt">feature_list.json <span id="lr-sess" style="color:var(--c-tool)"></span></div>
+<pre class="fl" id="lr-json"></pre>
+      <div class="ja" id="lr-count" style="position:absolute;left:24px;right:24px;bottom:18px;font-size:26px;color:#fff"></div>
+    </div>
+  </div>
+  <div class="src">Anthropic Engineering, "Effective harnesses for long-running agents" (2025) の考え方を EC の例にしたもの</div>
+<style>
+#s-longrun .fl{font:19px/1.65 var(--mono);color:#cfd3dc;margin:10px 0 0;white-space:pre}
+#s-longrun .fl .t{color:var(--c-ok);font-weight:700} #s-longrun .fl .f{color:var(--c-bad)} #s-longrun .fl .k{color:var(--c-ctx)} #s-longrun .fl .s{color:#e6db74}
+#s-longrun .fl .flash{background:rgba(76,195,138,.18);display:inline-block;border-radius:4px}
+</style>
+<aside class="notes">
+<div class="nt-cue">⏱ 59:00–61:30 (2.5分) · → 5回 (右の JSON が1つずつ true に)</div>
+<div class="nt-jp">もっと長い作業、数時間や数日かかる作業はどうするか。
+Anthropic が公開しているやり方を、ECの例で紹介します。
+
+左です。最初の1回だけ、Initializer というエージェントが動きます。
+要件を、<b>テストできる機能のリスト</b>に分けて、JSON で保存します。最初は全部 false です。
+
+その後は、毎回のセッションで同じことをします。
+今いる場所を確認して、進捗ファイルと git log を読む。
+未完了の中で一番優先のものを1つだけ選んで、テストして、true にして、コミット。
+
+【→】【→】【→】【→】右の JSON を見てください。セッションごとに、一つずつ true になっていきます。
+
+大事なルールは、変えていいのは passes だけ、ということです。項目を消したり、書き換えたりはできません。
+だから、6個中4個しか true でなければ、AIは「全部終わりました」とは<b>言えません</b>。
+進捗が、AIの頭の中ではなく、<b>ファイルという客観的な場所</b>にあるからです。</div>
+<div class="nt-vi">VN: Harness cho tác vụ dài (Anthropic): Initializer tạo feature_list.json (toàn false) + progress + init.sh + git. Mỗi session: đọc progress/git log → chọn 1 mục ưu tiên → test → passes:true → commit. Chỉ được sửa trường passes → không thể báo xong giả; tiến độ nằm ở file khách quan.</div>
+</aside>
+</section>
+
+<section class="slide" id="s-multi" data-title="マルチエージェント" data-part="C. 開発プロセス (45–68')">
+  <h1 class="t ja">マルチエージェント: <span class="g">役割</span>で分ける</h1>
+  <svg class="brush"><use href="#brush"/></svg>
+  <div class="row mt" style="gap:30px;align-items:flex-start">
+    <div class="col grow ja">
+      <div class="grid3" style="gap:16px">
+        <div class="box center frag" data-f="1" style="border-color:var(--c-tool)"><div class="s40">🛠️</div><b>実装</b><br><span class="s22 m">チケットを実装</span></div>
+        <div class="box center frag" data-f="2" style="border-color:var(--green)"><div class="s40">🧪</div><b>テスト</b><br><span class="s22 m">仕様からテストを書く<br>(実装は見ない)</span></div>
+        <div class="box center frag" data-f="3" style="border-color:var(--blue)"><div class="s40">🔍</div><b>レビュー</b><br><span class="s22 m">新しい context で<br>diff だけを見る</span></div>
+      </div>
+      <div class="box blue s24 frag" data-f="4"><b>Subagent</b>: 調査は別 context で → <b>要約だけ</b>返す <span class="m">(→ パートE)</span></div>
+    </div>
+    <div class="col ja" style="width:520px">
+      <div class="box red frag" data-f="5"><h3 class="r">使わない方がいい時</h3>
+        <ul class="clean s24"><li class="xx">同じファイルを同時に触る</li><li class="xx">設計の判断がバラバラになる</li><li class="xx">全部の会話を共有 → context が汚れる</li><li class="xx">ハーネスがまだ弱い</li></ul></div>
+      <div class="chot ja frag" data-f="6" style="font-size:26px;margin-top:0">まず <b>1エージェント + 良いハーネス</b>。<br>並列はその後。</div>
+    </div>
+  </div>
+<aside class="notes">
+<div class="nt-cue">⏱ 61:30–63:30 (2分) · → 6回</div>
+<div class="nt-jp">マルチエージェントについてです。
+分けるなら、「役割」で分けるのがおすすめです。
+
+【→】実装するエージェント。
+【→】テストを書くエージェント。仕様だけを見て書きます。実装を見ないのがポイントです。
+【→】レビューするエージェント。新しいコンテキストで、diff だけを見ます。実装した時の思い込みがありません。
+【→】それから subagent。調査は別のコンテキストでやって、要約だけを返します。これはパートEで詳しく話します。
+
+【→】でも、使わない方がいい時もあります。
+同じファイルを同時に触る時。設計の判断がバラバラになる時。全部の会話を共有して、コンテキストが汚れる時。
+そして、ハーネスがまだ弱い時です。
+
+【→】私のおすすめは、<b>まず1つのエージェントと、良いハーネス</b>。並列はその後です。</div>
+<div class="nt-vi">VN: Multi-agent chia theo vai: implement / test (viết từ spec, không xem code) / review (context mới, chỉ xem diff); subagent cho điều tra → trả tóm tắt. Không nên khi: cùng sửa 1 file, quyết định thiết kế lệch nhau, chia sẻ toàn bộ hội thoại (ô nhiễm context), harness còn yếu. Trước tiên: 1 agent + harness tốt.</div>
+</aside>
+</section>
+
+<section class="slide" id="s-qaC" data-title="Q&A: C + 休憩" data-part="C. 開発プロセス (45–68')">
+  <div class="kicker">Q&amp;A</div>
+  <div class="row mid jc" style="height:100%;gap:60px">
+    <div class="col ja" style="width:700px;gap:18px">
+      <h1 class="ja" style="font-size:52px">ここまでで質問は？</h1>
+      <div class="box s32"><span class="qq"></span>今のチケット、<b>1 PR</b>で終わる大きさですか？</div>
+      <div class="box s32"><span class="qq"></span>受入条件を<b>コマンド</b>で書けますか？</div>
+    </div>
+    <div class="box yellow center ja" style="width:440px;padding:40px 20px"><div style="font-size:110px">☕</div><div class="s40">休憩 5分</div></div>
+  </div>
+<aside class="notes">
+<div class="nt-cue">⏱ 63:30–66:00 Q&amp;A → 5分休憩 (〜71:00)</div>
+<div class="nt-jp">ここまでで、ご質問はありますか？
+
+皆さんのチケット、1つの PR で終わる大きさになっていますか？
+受入条件を、コマンドで書けますか？
+考えてみてください。
+
+では、5分休憩します。○時○分に再開します。</div>
+<div class="nt-vi">VN: Q&A khối C, hỏi khán giả: ticket có vừa 1 PR? tiêu chí chấp nhận viết được bằng lệnh? Rồi nghỉ 5 phút (nói giờ quay lại).</div>
+</aside>
+</section>

@@ -1,0 +1,275 @@
+<!-- ===================== 0. OPENING ===================== -->
+
+<section class="slide" id="s-title" data-title="タイトル" data-part="0. オープニング (0–8')">
+  <div class="row mid" style="height:100%;gap:40px">
+    <div class="grow">
+      <div class="tag green" style="font-size:24px">AI STUDY SESSION · SPARK JAPAN</div>
+      <h1 class="ja" style="font-size:78px;line-height:1.18;margin-top:26px;font-weight:600">コーディング<span class="g">エージェント</span><br>PoCから<span class="r">本番運用</span>へ</h1>
+      <svg class="brush" style="margin:14px 0 0;width:78%"><use href="#brush"/></svg>
+      <p style="font-size:30px;margin:22px 0 0;font-family:var(--title)">Agent Loop · Guardrails · Task Design · Review · Context</p>
+      <p class="ja" style="font-size:34px;margin:26px 0 0">AIは<span class="hl">魔法</span>ではなく、<span class="hl">増幅器</span>。</p>
+      <p class="m" style="font-size:24px;margin-top:40px">Nguyen Tri Dung · CTO · AI-native Software Engineering</p>
+    </div>
+    <div class="sketch" style="width:470px;position:relative;height:540px">
+      <svg width="190" height="210" style="position:absolute;left:10px;top:40px"><use href="#person"/></svg>
+      <svg width="170" height="190" style="position:absolute;right:20px;top:60px"><use href="#robot"/></svg>
+      <div style="position:absolute;left:185px;top:110px;font-size:54px;color:var(--orange)">⇄</div>
+      <svg width="140" height="170" style="position:absolute;left:60px;top:300px"><use href="#check"/></svg>
+      <svg width="140" height="140" style="position:absolute;right:60px;top:320px"><use href="#test"/></svg>
+      <div class="ja g" style="position:absolute;left:30px;top:480px;font-size:24px">人が決める</div>
+      <div class="ja" style="position:absolute;right:30px;top:480px;font-size:24px">AIが速く回す</div>
+    </div>
+  </div>
+<aside class="notes">
+<div class="nt-cue">⏱ 0:00–1:30 (1.5分) · 挨拶 → 自己紹介は次のスライド</div>
+<div class="nt-jp">皆さん、こんにちは。今日はお時間をいただき、ありがとうございます。
+ベトナムから来ました、Dung（ズン）と申します。
+
+最初にお願いがあります。
+私は日本語ネイティブではありません。
+分かりにくいところがあったら、遠慮なく止めてください。
+英語でも、図でも大丈夫です。
+
+今日のテーマは「コーディングエージェントを、PoCから<ruby>本番運用<rt>ほんばんうんよう</rt></ruby>へ」です。
+キーワードは一つだけ覚えてください。
+<b>AIは「魔法」ではなく、「<ruby>増幅器<rt>ぞうふくき</rt></ruby>」です。</b>
+良いプロセスは、もっと良くなります。
+悪いプロセスは、もっと悪くなります。
+今日は、その「プロセス」と「仕組み」の話をします。</div>
+<div class="nt-vi">VN: Chào, giới thiệu ngắn, xin phép vì không phải native → cứ ngắt lời, hỏi bằng EN/hình cũng được. Thông điệp: AI là bộ khuếch đại, không phải đũa thần.</div>
+</aside>
+</section>
+
+<section class="slide" id="s-agenda" data-title="今日の流れ" data-part="0. オープニング (0–8')">
+  <h1 class="t ja">今日の流れ <span class="m" style="font-size:30px">(2時間)</span></h1>
+  <svg class="brush"><use href="#brush"/></svg>
+  <div class="row mt" style="gap:36px">
+    <div class="grow">
+      <table class="t ja" style="font-size:27px">
+        <tr><th style="width:70px"></th><th>テーマ</th><th style="width:170px">デモ</th><th style="width:110px">時間</th></tr>
+        <tr class="frag" data-f="1"><td><span class="num">A</span></td><td>Agentの中身 <span class="m">— Agent Loop</span></td><td class="o">▶ DEMO ①</td><td>12分</td></tr>
+        <tr class="frag" data-f="1"><td><span class="num">B</span></td><td>本番運用とガードレール</td><td class="o">▶ DEMO ②</td><td>19分</td></tr>
+        <tr class="frag" data-f="1"><td><span class="num">C</span></td><td>開発プロセス <span class="m">— Task分解 · Loop</span></td><td class="o">▶ DEMO ③</td><td>17分</td></tr>
+        <tr class="frag" data-f="2"><td><span class="num orange">☕</span></td><td class="m">休憩</td><td></td><td class="m">5分</td></tr>
+        <tr class="frag" data-f="2"><td><span class="num">D</span></td><td>品質は Spec から <span class="m">— V-Model · Spec Kit</span></td><td class="o">▶ DEMO ④ ⑤</td><td>16分</td></tr>
+        <tr class="frag" data-f="2"><td><span class="num">E</span></td><td>Context管理 · Token最適化</td><td class="o">▶ DEMO ⑥</td><td>14分</td></tr>
+        <tr class="frag" data-f="3"><td><span class="num ink">F</span></td><td>要件定義 · 組織展開 · AI組込み <span class="m">(概要)</span></td><td></td><td>9分</td></tr>
+      </table>
+    </div>
+    <div class="col" style="width:420px">
+      <div class="box green frag" data-f="4"><h3 class="ja">スライドは短く、デモ多め</h3>
+        <p class="ja s22" style="margin:0">7テーマは1日でも足りない量（笑）<br>今日は<span class="hl">要点</span> + <span class="hl">実際に動かす</span>。</p></div>
+      <div class="box yellow frag" data-f="5"><h3 class="ja">質問はいつでも</h3>
+        <p class="ja s22" style="margin:0">デモの間でもOK。<br>英語・図でもOKです 🙏</p></div>
+    </div>
+  </div>
+<aside class="notes">
+<div class="nt-cue">⏱ 1:30–3:30 (2分) · → 3回でテーブル表示 → → 右の2箱</div>
+<div class="nt-jp">今日の流れです。
+
+【→】A はエージェントの中身。B は本番運用とガードレール。C は開発プロセス。
+各パートで、実際にエージェントを動かすデモをします。
+
+【→】休憩をはさんで、D は品質。「Spec から作る」という話です。E はコンテキストとトークン。ここにもデモがあります。
+
+【→】最後の F は、要件定義、組織展開、AIを組み込んだシステム。ここは概要だけです。
+
+【→】いただいた7つのテーマは、1日でも足りない量です。
+なので今日は、スライドは短くして、<b>実際に動かすところ</b>をたくさん見てもらいます。
+
+【→】質問はいつでもどうぞ。デモの間でも大丈夫です。</div>
+<div class="nt-vi">VN: Giới thiệu 6 khối A–F. 7 chủ đề của khách = 1 ngày cũng không đủ → hôm nay tập trung kỹ thuật + ví dụ thật. Q&A cuối mỗi khối.</div>
+</aside>
+</section>
+
+<section class="slide" id="s-hook" data-title="質問: 速くなった?" data-part="0. オープニング (0–8')">
+  <div class="kicker">Q</div>
+  <div class="col jc mid" style="height:100%;gap:40px">
+    <h1 class="ja" style="font-size:66px;text-align:center;line-height:1.35">AIを使って、開発は<br><span class="g">速く</span>なりましたか？</h1>
+    <div class="row frag" data-f="1" style="gap:60px">
+      <div class="box center" style="width:440px"><div class="s40">🙋</div><p class="ja" style="margin:6px 0 0">「速くなった」と<b>感じる</b>人</p></div>
+      <div class="box red center" style="width:440px"><div class="s40">📏</div><p class="ja" style="margin:6px 0 0">実際に<span class="r">測った</span>ことがある人</p></div>
+    </div>
+  </div>
+<aside class="notes">
+<div class="nt-cue">⏱ 3:30–4:30 (1分) · 手を挙げてもらう（2回）</div>
+<div class="nt-jp">一つ質問させてください。
+AIを使って、開発は速くなりましたか？
+
+【→】「速くなった」と感じる方、手を挙げてください。
+……ありがとうございます。たくさんいますね。
+
+では、実際に<ruby>測った<rt>はかった</rt></ruby>ことがある方は？
+……少ないですね。実は、ここが今日のスタート地点です。</div>
+<div class="nt-vi">VN: Hỏi 2 lần giơ tay: "thấy nhanh hơn" vs "đã đo thật". Thường nhiều người thấy, ít người đo → dẫn vào số liệu METR.</div>
+</aside>
+</section>
+
+<section class="slide" id="s-metr" data-title="METR: 感覚 vs 測った結果" data-part="0. オープニング (0–8')" data-steps="3">
+  <h1 class="t ja">感覚と、測った結果は<span class="r">反対</span>だった</h1>
+  <svg class="brush"><use href="#brush"/></svg>
+  <div class="row mt" style="gap:50px;align-items:center">
+    <div style="width:820px;height:520px;position:relative" class="ja">
+      <!-- axis -->
+      <div style="position:absolute;left:0;right:0;top:260px;border-top:3px solid var(--ink)"></div>
+      <div class="m" style="position:absolute;right:0;top:226px;font-size:20px">0%</div>
+      <div class="m" style="position:absolute;left:0;top:30px;font-size:20px">↑ 速くなる</div>
+      <div class="m" style="position:absolute;left:0;bottom:0;font-size:20px">↓ 遅くなる</div>
+      <!-- bars (height px = % * 9) -->
+      <div class="metr-bar" data-at="1" style="left:120px;background:var(--blue);--h:216px;bottom:260px"><div class="metr-lbl">予想<br><b class="b">+24%</b></div></div>
+      <div class="metr-bar" data-at="2" style="left:340px;background:var(--green2);--h:180px;bottom:260px"><div class="metr-lbl">終わった後の感覚<br><b class="g">+20%</b></div></div>
+      <div class="metr-bar down" data-at="3" style="left:560px;background:var(--red);--h:171px;top:263px"><div class="metr-lbl">実際に測ると<br><b class="r">−19%</b><br><span style="font-size:20px">(遅くなった)</span></div></div>
+    </div>
+    <div class="col grow ja s24">
+      <div class="box"><b>METR 2025 · RCT</b><br>OSS経験者 16人 · 実タスク 246件<br>100万行クラスのリポジトリ</div>
+      <div class="box yellow st" data-at="3">理由: プロンプト · 待ち時間 · <b>AI出力のレビュー</b>が増えた</div>
+      <div class="box dash st" data-at="3" style="font-size:20px">⚠ 人数は少ない · 2025年前半のモデル。<br>「AIは役に立たない」ではない。<br>→ <span class="hl">測らないと分からない</span></div>
+    </div>
+  </div>
+  <div class="src">Source: METR, "Measuring the Impact of Early-2025 AI on Experienced Open-Source Developer Productivity" (arXiv 2507.09089)</div>
+<style>
+.metr-bar{position:absolute;width:150px;height:0;border:2.5px solid var(--ink);border-radius:6px 6px 0 0;transition:height .9s cubic-bezier(.2,.8,.2,1)}
+.metr-bar.down{border-radius:0 0 6px 6px}
+.metr-bar.on{height:var(--h)}
+.metr-lbl{position:absolute;left:-35px;width:220px;bottom:calc(100% + 8px);text-align:center;font-size:24px;line-height:1.25;opacity:0;transition:opacity .4s .6s}
+.metr-bar.down .metr-lbl{bottom:auto;top:calc(100% + 8px)}
+.metr-bar.on .metr-lbl{opacity:1}
+.metr-lbl b{font-family:var(--title);font-size:40px;font-weight:400}
+</style>
+<aside class="notes">
+<div class="nt-cue">⏱ 4:30–6:00 (1.5分) · → 3回でバーが1本ずつ</div>
+<div class="nt-jp">METR という研究機関の実験です。2025年に行われました。
+経験のある OSS 開発者 16人が、自分のリポジトリで、246個の本物のタスクをやりました。
+AIを使うタスクと、使わないタスクを、ランダムに分けています。
+
+【→】始める前の予想は「24%速くなる」。
+【→】終わった後の感覚も「20%速くなった」。
+【→】でも、実際に測ると……<b>19%遅くなっていました。</b>
+
+理由は、プロンプトを書く時間、待つ時間、そして AI が書いたコードを<b>レビューする時間</b>です。
+
+ただし、注意してください。
+人数は少ないですし、2025年前半のモデルです。「AIは役に立たない」という話ではありません。
+大事なのは、<b>感覚だけでは分からない。測らないと分からない</b>、ということです。</div>
+<div class="nt-vi">VN: METR RCT: dự đoán +24%, cảm nhận +20%, đo thật −19%. Nguyên nhân: prompt, chờ, review output. Cảnh báo trung thực: mẫu nhỏ, model cũ → thông điệp "phải đo".</div>
+</aside>
+</section>
+
+<section class="slide" id="s-amplifier" data-title="AIは増幅器" data-part="0. オープニング (0–8')">
+  <h1 class="t ja">AIは「<span class="g">増幅器</span>」 <span class="en m" style="font-size:34px">— Amplifier</span></h1>
+  <svg class="brush"><use href="#brush"/></svg>
+  <div class="grid3 mt ja">
+    <div class="box center frag" data-f="1"><div style="font:400 84px var(--title)" class="g">90%</div>開発者のAI利用率<div class="m s22">DORA 2025 (約5,000人)</div></div>
+    <div class="box red center frag" data-f="2"><div style="font:400 84px var(--title)" class="r">3%</div>AI出力を「とても信頼」<div class="m s22">DORA 2025</div></div>
+    <div class="box yellow center frag" data-f="3"><div style="font:400 84px var(--title)" class="o">約9割</div>レビュー負担が増えた<div class="m s22">国内ITエンジニア調査 (n=322)</div></div>
+  </div>
+  <div class="row mt2 frag" data-f="4" style="gap:30px;align-items:center">
+    <div class="box green grow ja center">良いプロセス × AI = <b class="g">もっと良く</b></div>
+    <div class="box red grow ja center">悪いプロセス × AI = <b class="r">もっと速く壊れる</b></div>
+  </div>
+  <div class="chot ja frag" data-f="5">問題は「AIを使うか」ではなく、<b>どんな仕組みの中で使うか</b>。</div>
+  <div class="src">Google DORA "2025 State of AI-assisted Software Development" · @IT 2026/06/16 (キッカケクリエイション調査, 2026/04, n=322)</div>
+<aside class="notes">
+<div class="nt-cue">⏱ 6:00–7:00 (1分) · → 5回</div>
+<div class="nt-jp">次は Google の DORA レポート、約5,000人の調査です。
+【→】AIを使っている開発者は90%。もう当たり前ですね。
+【→】でも、AIの出力を「とても信頼している」人は、たった3%です。
+【→】日本の調査でも、レビューする人の約9割が「負担が増えた」と答えています。
+
+【→】DORA の結論は、「AIは<ruby>増幅器<rt>ぞうふくき</rt></ruby>」です。
+良いプロセスにAIを入れると、もっと良くなる。
+悪いプロセスに入れると、もっと速く壊れる。
+
+【→】だから、問題は「AIを使うかどうか」ではありません。
+「どんな仕組みの中で使うか」です。今日はその仕組みの話です。</div>
+<div class="nt-vi">VN: DORA: 90% dùng AI, chỉ 3% tin cao. Khảo sát Nhật: ~90% reviewer thấy tải tăng. AI = khuếch đại. Vấn đề là "khung/cơ chế" dùng AI.</div>
+</aside>
+</section>
+
+<section class="slide" id="s-formula" data-title="今日の地図" data-part="0. オープニング (0–8')">
+  <h1 class="t ja">今日の地図</h1>
+  <svg class="brush"><use href="#brush"/></svg>
+  <div class="formula mt2">
+    <div class="fx">Agent</div><div class="eq">=</div>
+    <div class="fx model">Model</div><div class="eq">+</div>
+    <div class="fx frag" data-f="2" style="border-color:var(--c-ctx)">Context<span class="ja">E · Context管理</span></div><div class="eq">+</div>
+    <div class="fx frag" data-f="3" style="border-color:var(--c-tool)">Tools<span class="ja">A · Agent Loop</span></div><div class="eq">+</div>
+    <div class="fx frag" data-f="4" style="border-color:var(--red)">Guardrails<span class="ja">B · 本番運用</span></div><div class="eq">+</div>
+    <div class="fx frag" data-f="5" style="border-color:var(--green)">Feedback<span class="ja">C · D · Loop/Review</span></div>
+  </div>
+  <div class="row mt2 frag" data-f="1" style="justify-content:center">
+    <div class="box dash ja center" style="width:520px;font-size:24px">Model = 買うもの · 毎月 良くなる<br><span class="m">私たちが変えられない部分</span></div>
+    <div class="box green ja center frag" data-f="6" style="width:620px;font-size:24px">Model 以外 = <b class="g">Harness</b>（ハーネス）<br>= <span class="hl">私たちエンジニアの仕事</span></div>
+  </div>
+<style>
+.formula{display:flex;align-items:center;justify-content:center;gap:10px;font-family:var(--title)}
+.formula .fx{border:3px solid var(--ink);border-radius:var(--wob);padding:14px 20px;font-size:38px;background:#fffdf7;display:flex;flex-direction:column;align-items:center;line-height:1.1}
+.formula .fx span{font-size:17px;color:var(--ink2);margin-top:6px}
+.formula .fx.model{border-color:var(--c-model);background:#f1eafc}
+.formula .eq{font-size:44px;color:var(--mute)}
+</style>
+<aside class="notes">
+<div class="nt-cue">⏱ 7:00–8:00 (1分) · → 6回</div>
+<div class="nt-jp">今日の地図です。この式を覚えてください。
+Agent は、Model に、いくつかの部品を足したものです。
+
+【→】Model は、私たちが買うものです。毎月、勝手に良くなります。私たちは変えられません。
+
+【→】Context。モデルに何を見せるか。これは E のパートです。
+【→】Tools。モデルが何をできるか。A で見ます。
+【→】Guardrails。何をさせないか。B のパートです。
+【→】Feedback。テストやレビューで、結果をチェックする仕組み。C と D です。
+
+【→】Model 以外の部分を「Harness（ハーネス）」と呼びます。
+もともとは、馬につける道具のことです。馬が強くても、道具がないと、仕事はできません。
+<b>このハーネスを作るのが、私たちエンジニアの仕事です。</b></div>
+<div class="nt-vi">VN: Công thức Agent = Model + Context + Tools + Guardrails + Feedback. Model mua, không đổi được; phần còn lại = harness (yên cương ngựa) = việc của kỹ sư. Map từng phần vào khối A–E.</div>
+</aside>
+</section>
+
+<section class="slide" id="s-example" data-title="今日の例: ECサイト" data-part="0. オープニング (0–8')">
+  <h1 class="t ja">今日の例: よくある <span class="g">ECサイト</span></h1>
+  <svg class="brush"><use href="#brush"/></svg>
+  <div class="row mt" style="gap:34px">
+    <div class="ec-grid ja grow">
+      <div class="ec">🛍️<b>商品</b></div><div class="ec">🛒<b>カート</b></div><div class="ec">📦<b>在庫</b></div><div class="ec">🎟️<b>クーポン</b></div>
+      <div class="ec">🧾<b>注文</b></div><div class="ec">💳<b>決済</b></div><div class="ec">↩️<b>返品</b></div><div class="ec">💴<b>返金</b></div>
+    </div>
+    <div class="col" style="width:600px">
+      <div class="box yellow ja frag" data-f="1"><h3>でも、ルールは誰が決める？</h3>
+        <ul class="clean s24">
+          <li class="qq">1注文で同じ商品を<b>何個まで</b>買える？</li>
+          <li class="qq">在庫が<b>何個以下</b>になったら発注？</li>
+          <li class="qq">返品は受取から<b>何日以内</b>？</li>
+          <li class="qq">クーポン使用の注文、返金額は<b>いくら</b>？</li>
+          <li class="qq">消費税の端数は<b>注文ごと</b>？ <b>商品ごと</b>？</li>
+        </ul></div>
+      <div class="chot ja frag" data-f="2" style="font-size:26px">AIは<b>“なんとなく”決めてしまう</b>。<br>ここが今日の全パートに出てきます。</div>
+    </div>
+  </div>
+  <div class="fict ja">※ 例はすべてサンプルです（実在しません）</div>
+<style>
+.ec-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;align-content:start}
+.ec{border:2.5px solid var(--ink);border-radius:var(--wob);background:#fffdf7;text-align:center;font-size:62px;padding:14px 0 10px;line-height:1.1}
+.ec:nth-child(even){border-radius:var(--wob2)}
+.ec b{display:block;font-size:26px;font-weight:400;margin-top:6px}
+</style>
+<aside class="notes">
+<div class="nt-cue">⏱ 8:00–9:00 (1分) · → 2回</div>
+<div class="nt-jp">今日は、一つの例をずっと使います。よくある EC サイトです。
+商品、カート、在庫、クーポン、注文、決済、返品、返金。
+皆さん、毎日使っていますよね。説明はいりません。
+
+【→】でも、ルールは誰が決めるでしょうか。
+1回の注文で、同じ商品を何個まで買えるか。
+在庫が何個以下になったら、発注するか。
+返品は何日以内か。クーポンを使った注文の返金はいくらか。
+消費税の端数は、注文ごとか、商品ごとか。
+
+【→】AI に「EC サイトを作って」と言うと、AI はこれを<b>それっぽく、勝手に決めます</b>。
+しかも、ちゃんと動きます。だから気づきにくい。
+この問題は、今日のすべてのパートに出てきます。
+※ 例はすべて架空です。</div>
+<div class="nt-vi">VN: Ví dụ xuyên suốt: EC site giả định. Các luật nghiệp vụ (giới hạn số lượng, ngưỡng nhập kho, hạn trả hàng 8 ngày, hoàn tiền khi có coupon, làm tròn thuế) phải do NGƯỜI quyết; AI sẽ tự đoán "nghe hợp lý" và chạy được → khó phát hiện.</div>
+</aside>
+</section>

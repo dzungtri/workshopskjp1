@@ -1,0 +1,59 @@
+{
+  "_meta": {
+    "approvedBy": "プロダクトオーナー (架空) / Human approved",
+    "approvedAt": "2026-11-10",
+    "note": "按分返金 (BR-12) の期待値。人間が手計算で確認済み。AIエージェントは変更禁止",
+    "formula": "refund = (R - ceil(D * R / S)) + floor((R - ceil(D * R / S)) * 10%)  R=返品小計 D=割引 S=注文小計",
+    "now": "2026-11-17T10:00:00+09:00"
+  },
+  "cases": [
+    {
+      "id": "R-01",
+      "description": "クーポンなし・全数返品 = 支払額",
+      "lines": [{ "sku": "TEA-001", "qty": 2 }, { "sku": "MUG-002", "qty": 1 }],
+      "coupon": null,
+      "returnLines": [{ "sku": "TEA-001", "qty": 2 }, { "sku": "MUG-002", "qty": 1 }],
+      "expected": { "orderTotal": 4994, "refund": 4994 }
+    },
+    {
+      "id": "R-02",
+      "description": "クーポンなし・部分返品: 1980 + 198",
+      "lines": [{ "sku": "TEA-001", "qty": 2 }, { "sku": "MUG-002", "qty": 1 }],
+      "coupon": null,
+      "returnLines": [{ "sku": "MUG-002", "qty": 1 }],
+      "expected": { "orderTotal": 4994, "refund": 2178 }
+    },
+    {
+      "id": "R-03",
+      "description": "10%クーポン・部分返品: 1980 - 198 = 1782, 税 178",
+      "lines": [{ "sku": "RICE-004", "qty": 1 }, { "sku": "MUG-002", "qty": 1 }, { "sku": "TEA-001", "qty": 1 }],
+      "coupon": { "code": "AUTUMN10", "type": "percent", "value": 10, "minSubtotal": 3000, "expiresAt": "2026-12-31T23:59:59+09:00" },
+      "returnLines": [{ "sku": "MUG-002", "qty": 1 }],
+      "expected": { "orderTotal": 6197, "refund": 1960 }
+    },
+    {
+      "id": "R-04",
+      "description": "15%クーポン・部分返品: 按分 59.67→60 (切り上げ), 398 - 60 = 338, 税 33",
+      "lines": [{ "sku": "SOAP-006", "qty": 3 }],
+      "coupon": { "code": "SOAP15", "type": "percent", "value": 15, "minSubtotal": 1000, "expiresAt": "2026-12-31T23:59:59+09:00" },
+      "returnLines": [{ "sku": "SOAP-006", "qty": 1 }],
+      "expected": { "orderTotal": 1116, "refund": 371 }
+    },
+    {
+      "id": "R-05",
+      "description": "500円引き・部分返品: 按分 500×1280/3780 = 169.31→170, 1280 - 170 = 1110, 税 111",
+      "lines": [{ "sku": "TOWEL-003", "qty": 1 }, { "sku": "TEA-001", "qty": 1 }],
+      "coupon": { "code": "WELCOME500", "type": "fixed", "value": 500, "minSubtotal": 2000, "expiresAt": "2026-12-31T23:59:59+09:00" },
+      "returnLines": [{ "sku": "TEA-001", "qty": 1 }],
+      "expected": { "orderTotal": 3608, "refund": 1221 }
+    },
+    {
+      "id": "R-06",
+      "description": "10%クーポン・全数返品 = 支払額",
+      "lines": [{ "sku": "RICE-004", "qty": 1 }, { "sku": "MUG-002", "qty": 1 }, { "sku": "TEA-001", "qty": 1 }],
+      "coupon": { "code": "AUTUMN10", "type": "percent", "value": 10, "minSubtotal": 3000, "expiresAt": "2026-12-31T23:59:59+09:00" },
+      "returnLines": [{ "sku": "RICE-004", "qty": 1 }, { "sku": "MUG-002", "qty": 1 }, { "sku": "TEA-001", "qty": 1 }],
+      "expected": { "orderTotal": 6197, "refund": 6197 }
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+# Slide order (ids). Unlisted slides go to the 予備 (Appendix) section at the end.
+# 0. Opening ~6'
+s-title                1
+s-agenda               1.5
+s-metr                 1.5
+s-amplifier            1
+s-formula              0.5
+s-example              1
+# A. Agent Loop ~12'
+s-divA                 0.5
+s-demo1                6
+s-loop                 2.5
+s-mincode              1.5
+s-harness-map          1.5
+# B. Guardrails ~19'
+s-divB                 0.5
+s-poc-prod             1.5
+s-layers               3
+s-demo2                7
+s-matrix               2
+s-rules                2
+s-fail-gallery         3
+# C. Process ~17'
+s-divC                 0.5
+s-ticket               2
+s-dag                  2.5
+s-demo3                6
+s-loopeng              1.5
+s-ralph                1.5
+s-longrun              1.5
+s-break                5
+# D. Quality = Spec first ~16'
+s-divD2                0.5
+s-vmodel               2.5
+s-speckit              1.5
+s-demo4                6
+s-exercise             1.5
+s-demo5                4
+# E. Context ~14'
+s-divE                 0.5
+s-compact              2.5
+s-4strat               2
+s-demo6                4
+s-claudemd-research    1.5
+s-claudemd             2
+s-token                2
+# F. Summary ~9'
+s-req                  1.5
+s-org                  1.5
+s-aisys                1.5
+s-takeaway             2
+s-end                  3

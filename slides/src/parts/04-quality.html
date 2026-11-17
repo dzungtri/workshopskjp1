@@ -1,0 +1,233 @@
+<!-- ===================== D. QUALITY / REVIEW ===================== -->
+
+<section class="slide divider" id="s-divD" data-title="D: AI生成コードの品質" data-part="D. 品質保証 (71–91')">
+  <div class="big">D</div>
+  <h1 class="ja">AIが書いたコードの品質</h1>
+  <div class="q ja">テストは<span class="g">緑</span>。lint も OK。<br>……で、本当に<span class="hl">正しい</span>？</div>
+  <div class="map ja"><span>A Loop</span><span>B Guardrails</span><span>C Process</span><span class="now">D Quality</span><span>E Context</span><span>F 概要</span></div>
+<aside class="notes">
+<div class="nt-cue">⏱ 71:00–71:30 · 休憩明け。参加者が戻ったか確認</div>
+<div class="nt-jp">では再開します。パートD、AIが書いたコードの品質です。
+テストは緑。lint もOK。……で、本当に正しいでしょうか。
+ここが、たぶん皆さんが一番困っているところだと思います。</div>
+<div class="nt-vi">VN: Khối D — test xanh, lint OK, nhưng có thật sự đúng? Đây là chỗ khách đau nhất.</div>
+</aside>
+</section>
+
+<section class="slide" id="s-ai-bugs" data-title="AIコードによくある問題" data-part="D. 品質保証 (71–91')">
+  <h1 class="t ja">AIコードによくある問題: <span class="r">「問題なさそう」</span>が一番危ない</h1>
+  <svg class="brush"><use href="#brush"/></svg>
+  <div class="grid3 mt ja" style="gap:18px">
+    <div class="fc2 frag" data-f="1"><b>① 見た目がきれい</b><span>命名 · コメント · 型も完璧<br>→ レビューが<b>ゆるくなる</b></span></div>
+    <div class="fc2 frag" data-f="2"><b>② 業務の間違い</b><span>文法は正しい、仕様が違う<br>境界値 (boundary) · 端数 · 2回実行</span></div>
+    <div class="fc2 frag" data-f="3"><b>③ コピーしただけのテスト</b><span>実装と同じ式で期待値を計算<br>→ <b>間違いも一緒に合格</b></span></div>
+    <div class="fc2 frag" data-f="4"><b>④ 同じものをまた作る</b><span>既存の関数を使わない<br>似たコードが増える</span></div>
+    <div class="fc2 frag" data-f="5"><b>⑤ セキュリティ</b><span>入力チェックがない · パスワード<br>古い · 存在しない依存</span></div>
+    <div class="fc2 frag" data-f="6"><b>⑥ 説明できない</b><span>PRを出した人が<br>「なぜこう書いたか」を答えられない</span></div>
+  </div>
+  <div class="src ja">参考: GitHub「エージェントPRのレビューガイド」(2026/05, @IT 2026/07/01) · CodeRabbit "Code review best practices for AI-generated code"</div>
+<style>
+.fc2{border:2.5px solid var(--ink);border-radius:var(--wob);background:#fffdf7;padding:22px 24px;display:flex;flex-direction:column;gap:8px;min-height:200px}
+.fc2:nth-child(even){border-radius:var(--wob2)}
+.fc2 b{font-size:32px;font-weight:600} .fc2 span{font-size:24px;color:var(--ink2);line-height:1.5} .fc2 span b{font-size:inherit;color:var(--red)}
+</style>
+<aside class="notes">
+<div class="nt-cue">⏱ 71:30–74:00 (2.5分) · → 6回</div>
+<div class="nt-jp">AIのコードには、よくある問題があります。
+GitHub も「問題なさそうに見えるPRこそ危ない」と言っています。
+
+【→】1つ目。見た目がきれいです。命名もコメントも完璧。だから、レビューがゆるくなります。
+【→】2つ目。業務の間違い。文法は正しいけど、仕様が違う。境界値、端数、二重実行。
+【→】3つ目。なぞるだけのテスト。実装と同じ計算式で、期待値を作ってしまう。そうすると、<b>間違いも一緒に合格</b>します。
+【→】4つ目。車輪の再発明。既存の関数を使わずに、似たコードを新しく書きます。
+【→】5つ目。セキュリティ。入力チェックの漏れ、古いライブラリ、存在しないライブラリ。
+【→】6つ目。説明できない。PRを出した人が、「なぜこう書いたか」を答えられない。
+日本の調査でも、レビュアーの困りごとの上位でした。</div>
+<div class="nt-vi">VN: 6 vấn đề đặc thù code AI: (1) trông đẹp → review lỏng; (2) sai nghiệp vụ (biên, làm tròn, chạy 2 lần); (3) test "copy" công thức của code → sai cũng pass; (4) phát minh lại bánh xe, trùng code; (5) security, dependency cũ/không tồn tại; (6) người tạo PR không giải thích được.</div>
+</aside>
+</section>
+
+<section class="slide" id="s-funnel" data-title="レビューの3層" data-part="D. 品質保証 (71–91')" data-steps="4" style="padding:40px 60px">
+  <div class="row mid" style="gap:20px;margin-bottom:12px">
+    <h1 class="ja" style="font-size:44px">レビューは<span class="g">3層</span>: 人は人にしかできないことを</h1>
+  </div>
+  <div class="dk grow">
+    <div class="stepbar"></div>
+    <div class="fn" style="top:40px;width:1200px;left:120px;border-color:var(--c-ctx)" data-at="1">
+      <b style="color:var(--c-ctx)">① 機械</b><span>lint · 型 · テスト · SAST · 依存スキャン · カバレッジ</span><em>速い · 毎回 · 0円に近い</em></div>
+    <div class="fn" style="top:200px;width:960px;left:240px;border-color:var(--c-model)" data-at="2">
+      <b style="color:var(--c-model)">② AIレビュー</b><span>新しい context · できれば<b>別モデル</b> · diff と チケットだけ渡す</span><em>見落とし · 重複 · 命名</em></div>
+    <div class="fn" style="top:360px;width:720px;left:360px;border-color:var(--c-tool)" data-at="3">
+      <b style="color:var(--c-tool)">③ 人</b><span><b>意図 · 設計 · 業務ルール · お金と状態 · セキュリティ</b></span><em>遅い · 高い · でも最後のチェック</em></div>
+    <div class="ja st" data-at="4" style="position:absolute;left:0;right:0;bottom:30px;text-align:center;font-size:30px;color:#fff">
+      人が lint やスタイルを見ていたら、<span style="color:var(--c-bad)">時間の無駄</span>。<br><span style="font-size:24px;color:var(--dkmute)">機械 → AI で見つけられるものは先に見つけて、それから人へ</span></div>
+  </div>
+<style>
+#s-funnel .fn{position:absolute;height:130px;border:2.5px solid;border-radius:16px;background:var(--dk2);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;opacity:0;transform:translateY(-14px);transition:all .5s}
+#s-funnel .fn.on{opacity:1;transform:none}
+#s-funnel .fn b{font:400 34px var(--title)} #s-funnel .fn span{font-size:23px;font-family:var(--jp)} #s-funnel .fn span b{font-size:23px;font-family:var(--jp);color:#fff}
+#s-funnel .fn em{font-style:normal;font-size:17px;color:var(--dkmute);font-family:var(--jp)}
+</style>
+<aside class="notes">
+<div class="nt-cue">⏱ 74:00–76:30 (2.5分) · → 4回</div>
+<div class="nt-jp">レビューは3つの層に分けます。
+
+【→】1層目は機械です。lint、型チェック、テスト、セキュリティスキャン、依存のスキャン。速くて、毎回できて、ほぼタダです。
+
+【→】2層目は AI のレビュー。ポイントは、<b>新しいコンテキスト</b>で見ることです。実装したエージェントとは別に。できれば別のモデルで。渡すのは diff とチケットだけ。
+
+【→】3層目が人です。人は、意図、設計、業務ルール、お金と状態、セキュリティを見ます。遅くて高いですが、最後のチェックです。
+
+【→】逆に言うと、人が lint やスタイルを指摘していたら、時間の無駄です。
+機械とAIで落とせるものは全部落としてから、人に渡してください。</div>
+<div class="nt-vi">VN: Review 3 lớp: máy (lint, type, test, SAST, scan dependency) → AI review (context mới, model khác, chỉ đưa diff + ticket) → người (ý định, thiết kế, luật nghiệp vụ, tiền & trạng thái, security). Người soi style = phí thời gian.</div>
+</aside>
+</section>
+
+<section class="slide" id="s-exercise" data-title="演習: テストは緑のPR" data-part="D. 品質保証 (71–91')">
+  <h1 class="t ja">演習: このPR、<span class="r">マージしますか？</span></h1>
+  <svg class="brush"><use href="#brush"/></svg>
+  <div class="row mt" style="gap:24px;align-items:flex-start">
+    <div class="col" style="width:470px">
+      <div class="paper ja" style="font-size:23px;line-height:1.6"><b style="font-size:26px">PR: 返金ログを追加し、<br>追跡しやすくする</b><br>
+        · 返金ごとに時刻 · 金額をログに記録<br>· 処理ごとにキーを変える<br>· <span class="g">npm test 全件 pass ✅</span><br>· <span class="g">lint pass ✅</span></div>
+      <div class="box yellow ja s24 frag" data-f="1">🤔 1分考えてください<br>どの操作で、<b>いくら</b>損しますか？</div>
+    </div>
+    <div class="col grow">
+<pre class="code" style="font-size:19.5px;line-height:1.6"><span class="c">// src/returns/refund-service.js</span>
+<span class="k">export function</span> createRefundService({ gateway, clock }) {
+  <span class="k">const</span> completed = <span class="k">new</span> Map(); <span class="c jp">// key -> 返金結果 (idempotent, BR-13)</span>
+<span class="add"><span class="k">+ const</span> log = [];</span>
+  <span class="k">return</span> {
+    refund(order, ret) {
+<span class="del"><span class="p">-     const key = `refund:${ret.id}`;</span></span>
+<span class="add"><span class="k">+     const</span> at = clock();</span>
+<span class="add"><span class="k">+     const</span> key = `refund:${ret.id}<span class="o">:${at}</span>`;  <span class="c jp">// 処理ごとに別のキー</span></span>
+      <span class="k">if</span> (completed.has(key)) <span class="k">return</span> completed.get(key);
+      <span class="k">const</span> amount = calcRefundAmount(order, ret.lines);
+      <span class="k">const</span> res = gateway.refund({ key, amount });
+      …</pre>
+    </div>
+  </div>
+  <div class="fict ja">ec-demo: ./demo/reset.sh d5 → git diff main · 架空</div>
+<aside class="notes">
+<div class="nt-cue">⏱ · → 1回で問いかけ → 1分考えてもらう → 答えは言わずに DEMO ④ へ</div>
+<div class="nt-jp">ここで演習です。AIが作ったPRです。
+「返金ログを追加して、追跡しやすくする」。テストも lint も全部通っています。
+差分は右です。小さいですね。ログを追加して、キーを処理ごとに変えた、と書いてあります。
+
+【→】1分考えてください。このPRをマージしますか？ もし問題があるなら、どの操作で、いくら損しますか？
+
+（1分待つ。誰かに聞いてみる。答えはまだ言わない）
+
+では、AIにもレビューしてもらいましょう。デモです。</div>
+<div class="nt-vi">VN: Bài tập: PR "thêm log hoàn tiền" — test & lint xanh. Bug: idempotency key thêm timestamp → bấm 2 lần lệch thời gian = 2 key → hoàn tiền 2 lần (¥2,178 → ¥4,356). Test cũ gọi 2 lần cùng thời điểm nên vẫn xanh. Review người = xem "test đang kiểm cái gì". Repo sẽ chia sẻ sau.</div>
+</aside>
+</section>
+
+<section class="slide" id="s-checklist" data-title="人のレビュー観点" data-part="D. 品質保証 (71–91')">
+  <h1 class="t ja">人のレビュー: <span class="g">チェックリスト</span></h1>
+  <svg class="brush"><use href="#brush"/></svg>
+  <div class="grid2 mt ja" style="gap:22px 40px;font-size:26px">
+    <div class="ckb frag" data-f="1"><span class="num ink">1</span><div><b>スコープ</b><br>許可されたファイルだけ？ ついでの変更は？<br><code>git diff --name-only main</code></div></div>
+    <div class="ckb frag" data-f="2"><span class="num ink">2</span><div><b>テスト</b><br>削除 · skip · 期待値変更は？ <b class="r">境界値と失敗ケース</b>は？<br><code>git diff main -- test/</code></div></div>
+    <div class="ckb frag" data-f="3"><span class="num ink">3</span><div><b>業務ルール</b><br>「人が決めた」ルールと一致？<br>TBD を勝手に決めていない？</div></div>
+    <div class="ckb frag" data-f="4"><span class="num red">4</span><div><b>お金と状態</b><br><span class="r">2回実行</span> · 失敗した時に元に戻るか<br>時刻 · タイムゾーン · 端数</div></div>
+    <div class="ckb frag" data-f="5"><span class="num ink">5</span><div><b>依存とセキュリティ</b><br>新しい package は？ 入力検証は？</div></div>
+    <div class="ckb frag" data-f="6"><span class="num green">6</span><div><b>説明できる？</b><br>自分の言葉で説明できなければ<br><span class="hl">マージしない</span></div></div>
+  </div>
+  <div class="fict ja">docs/review-checklist.md (ec-demo) — そのまま持ち帰れます</div>
+<style>
+.ckb{display:flex;gap:16px;align-items:flex-start;line-height:1.45}
+.ckb b{font-size:30px;font-weight:600} .ckb code{font-size:19px;color:var(--mute)}
+</style>
+<aside class="notes">
+<div class="nt-cue">⏱ 80:30–82:30 (2分) · → 6回</div>
+<div class="nt-jp">人がレビューする観点を、チェックリストにしました。今の演習も、これで見つけられます。
+
+【→】スコープ。許可されたファイルだけを変えているか。
+【→】テスト。テストが消されたり、skip されたりしていないか。境界値と、失敗するケースのテストがあるか。
+【→】業務ルール。人が決めたルールと一致しているか。未決定のことを勝手に決めていないか。
+【→】お金と状態。ここが一番大事です。2回実行、失敗した時に元に戻るか、時刻、端数。さっきのバグはここです。
+【→】依存とセキュリティ。
+【→】最後に、<b>自分の言葉で説明できるか</b>。説明できなければ、マージしない。
+
+このチェックリストは、デモのリポジトリに入っています。そのまま持ち帰ってください。</div>
+<div class="nt-vi">VN: Checklist review của người: phạm vi file; test (xoá/skip/đổi expected, có test biên & case lỗi); luật nghiệp vụ & TBD; tiền & trạng thái (chạy 2 lần, rollback, thời gian, làm tròn) — quan trọng nhất; dependency/security; tự giải thích được thì mới merge. File có sẵn trong repo.</div>
+</aside>
+</section>
+
+<section class="slide" id="s-reduce" data-title="テスト/レビュー工数を減らす" data-part="D. 品質保証 (71–91')">
+  <h1 class="t ja">テスト · レビューの<span class="g">工数を減らす</span>工夫</h1>
+  <svg class="brush"><use href="#brush"/></svg>
+  <div class="row mt" style="gap:28px;align-items:flex-start">
+    <div class="col ja grow" style="gap:14px">
+      <div class="rd frag" data-f="1"><span class="num">1</span><div><b>PRを小さく</b> — 200行のPR 5本 ＞ 1,000行のPR 1本</div></div>
+      <div class="rd frag" data-f="2"><span class="num">2</span><div><b>テストを先に、人はテストをレビュー</b><br><span class="m s24">実装より テスト の方が短く、意図が読める</span></div></div>
+      <div class="rd frag" data-f="3"><span class="num">3</span><div><b>Golden test</b> — 人が承認した期待値の表<br><span class="m s24">AIは変更禁止 (hook / CODEOWNERS)</span></div></div>
+      <div class="rd frag" data-f="4"><span class="num">4</span><div><b>Mutation testing</b> — わざとコードを壊して<br>テストが<b class="r">赤くなるか</b>確認 = テストのテスト</div></div>
+      <div class="rd frag" data-f="5"><span class="num">5</span><div><b>まず AI がレビュー</b> → 人は大事な所だけ<br><span class="m s24">PR説明に「判断したこと · 迷ったこと」を書かせる</span></div></div>
+    </div>
+    <div class="col" style="width:560px">
+<pre class="code frag" data-f="3" style="font-size:18px;line-height:1.55"><span class="c">// test/golden/refunds.json (一部)</span>
+{ <span class="y">"_meta"</span>: {
+    <span class="y">"approvedBy"</span>: <span class="y jp">"PO (架空) / Human"</span>,
+    <span class="y">"note"</span>: <span class="y jp">"手計算で確認済み。AI変更禁止"</span> },
+  <span class="y">"cases"</span>: [{
+    <span class="y">"id"</span>: <span class="y">"R-04"</span>,
+    <span class="y">"description"</span>: <span class="y jp">"クーポン注文の部分返品"</span>,
+    <span class="y">"expected"</span>: { <span class="y">"refund"</span>: <span class="o">371</span> }
+  }, …]}</pre>
+      <div class="box ja s22 frag" data-f="4" style="margin-top:14px"><b>例:</b> <code>&lt;=</code> を <code>&lt;</code> に変えても<br>テストが緑 → そのテストは<b class="r">境界を見ていない</b></div>
+    </div>
+  </div>
+<style>
+.rd{display:flex;gap:14px;align-items:flex-start;font-size:28px;line-height:1.4}
+.rd b{font-weight:600}
+</style>
+<aside class="notes">
+<div class="nt-cue">⏱ 82:30–85:30 (3分) · → 5回</div>
+<div class="nt-jp">「テストやレビューの工数を減らしたい」というご質問もありました。5つ紹介します。
+
+【→】1つ目。PRを小さくする。200行を5本の方が、1,000行を1本より、ずっと速くレビューできます。
+
+【→】2つ目。テストを先に書かせて、<b>人はテストをレビュー</b>する。テストは実装より短くて、意図が読みやすいです。テストが正しければ、実装はAIに任せられます。
+
+【→】3つ目。Golden test。人が手で計算して承認した期待値の表です。右がその例です。返金額371円。これはAIに変更させません。
+
+【→】4つ目。Mutation testing。わざとコードを壊して、テストが赤くなるかを見ます。テストのテストです。
+例えば、「&lt;=」を「&lt;」に変えてもテストが緑なら、そのテストは境界を見ていません。
+
+【→】5つ目。AIに一次レビューをさせて、人は要点だけ見る。
+PRの説明に、「判断したこと」「迷ったこと」を書かせると、人は迷った所だけ見ればいいです。</div>
+<div class="nt-vi">VN: Giảm công: PR nhỏ; test trước, người review TEST; golden test (expected do người duyệt, AI cấm sửa); mutation testing = test của test (đổi <= thành < mà test vẫn xanh → test không kiểm biên); AI review vòng 1 + PR ghi "đã quyết gì, phân vân gì".</div>
+</aside>
+</section>
+
+<section class="slide" id="s-metrics" data-title="測る指標" data-part="D. 品質保証 (71–91')">
+  <h1 class="t ja">何を<span class="g">測る</span>？</h1>
+  <svg class="brush"><use href="#brush"/></svg>
+  <div class="row mt2" style="gap:40px">
+    <div class="box green grow ja"><h3 class="g">✔ 測る</h3>
+      <ul class="clean s32" style="line-height:1.7"><li class="ck frag" data-f="1">リードタイム (チケット → 本番)</li><li class="ck frag" data-f="2">本番で見つかったバグ (escape)</li><li class="ck frag" data-f="3">レビュー待ち時間 · やり直しの割合</li><li class="ck frag" data-f="4">1 PR あたりのコスト (token + 人の時間)</li></ul></div>
+    <div class="box red ja" style="width:520px"><h3 class="r">✘ 測らない</h3>
+      <ul class="clean s32" style="line-height:1.7"><li class="xx frag" data-f="5">AIが書いた行数</li><li class="xx frag" data-f="5">AIの利用回数</li><li class="xx frag" data-f="5">「速くなった気がする」</li></ul></div>
+  </div>
+  <div class="chot ja frag" data-f="6">最初の METR を思い出してください: <b>感覚ではなく、数字で</b>。</div>
+<aside class="notes">
+<div class="nt-cue">⏱ 85:30–87:00 (1.5分) · → 6回 → Q&amp;A</div>
+<div class="nt-jp">最後に、何を測るか。
+
+【→】チケットから本番までのリードタイム。
+【→】本番で見つかったバグ。
+【→】レビューの待ち時間と、やり直しの割合。
+【→】そして、1つのPRあたりのコスト。トークンと、人の時間の両方です。
+
+【→】逆に、AIが書いた行数や、利用回数は測りません。行数が増えても、良いことではありません。
+
+【→】最初の METR の研究を思い出してください。感覚ではなく、数字で見ましょう。
+
+ここまでで質問はありますか？</div>
+<div class="nt-vi">VN: Đo: lead time, lỗi lọt production, thời gian chờ review & tỉ lệ làm lại, chi phí mỗi PR (token + giờ người). Không đo: số dòng AI viết, số lần dùng, "cảm giác nhanh". Nhắc lại METR. Mở Q&A ngắn.</div>
+</aside>
+</section>

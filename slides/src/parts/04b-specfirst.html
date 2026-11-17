@@ -1,0 +1,114 @@
+<!-- ===================== D'. QUALITY = SPEC FIRST (V-Model) ===================== -->
+
+<section class="slide divider" id="s-divD2" data-title="D: 品質は Spec から" data-part="D. 品質 · Spec first">
+  <div class="big">D</div>
+  <h1 class="ja">品質は「あと」ではなく「さき」に作る</h1>
+  <div class="q ja">テストは<span class="hl">コードから</span>ではなく、<span class="hl">Spec から</span>作る。</div>
+  <div class="map ja"><span>A Loop</span><span>B Guardrails</span><span>C Process</span><span class="now">D Quality</span><span>E Context</span><span>F 概要</span></div>
+<aside class="notes">
+<div class="nt-cue">⏱ · 休憩明け。参加者が戻ったか確認</div>
+<div class="nt-jp">では再開します。パートD、品質の話です。
+今日いちばん伝えたいことの一つです。
+品質は、コードを書いた「あと」で作るものではありません。「さき」に作ります。
+テストは、コードから作るのではなく、Spec から作ります。</div>
+<div class="nt-vi">VN: Khối D: chất lượng làm TRƯỚC, không phải SAU. Test sinh từ spec, không phải từ code.</div>
+</aside>
+</section>
+
+<section class="slide" id="s-vmodel" data-title="V-Model × AI" data-part="D. 品質 · Spec first" data-steps="5">
+  <h1 class="t ja">V-Model で見る <span class="g">Spec first</span></h1>
+  <svg class="brush"><use href="#brush"/></svg>
+  <div class="vm ja">
+    <svg width="1440" height="560" style="position:absolute;left:0;top:0">
+      <path d="M150 40 L620 430 M1290 40 L820 430" class="s" style="stroke:#b8ae98;stroke-width:4;stroke-dasharray:4 10"/>
+      <path class="vline st" data-at="2" d="M420 60 H 1020"/><path class="vline st" data-at="3" d="M480 200 H 960"/><path class="vline st" data-at="4" d="M540 330 H 900"/>
+    </svg>
+    <div class="vdk">Define · 書く ↘</div><div class="vvf">↗ Verify · 確かめる</div>
+    <!-- left -->
+    <div class="vb st" data-at="2" style="left:100px;top:20px;border-color:var(--blue)"><b>要件</b> <code>spec.md</code><span>User Story · FR-001… · 受入シナリオ</span></div>
+    <div class="vb st" data-at="3" style="left:160px;top:160px;border-color:var(--blue)"><b>設計</b> <code>plan.md</code><span>構成 · interface · data model</span></div>
+    <div class="vb st" data-at="4" style="left:220px;top:290px;border-color:var(--blue)"><b>タスク</b> <code>tasks.md</code><span>1タスク = 1 PR</span></div>
+    <!-- right -->
+    <div class="vb st" data-at="2" style="left:1020px;top:20px;border-color:var(--green)"><b>受入テスト</b><span>Given / When / Then</span></div>
+    <div class="vb st" data-at="3" style="left:960px;top:160px;border-color:var(--green)"><b>結合テスト</b><span>API · contract</span></div>
+    <div class="vb st" data-at="4" style="left:900px;top:290px;border-color:var(--green)"><b>単体テスト</b><span>golden test · 境界値</span></div>
+    <!-- bottom -->
+    <div class="vbottom st" data-at="1"><b>Code</b><span>⚡ AI がいちばん速い所</span></div>
+    <div class="vtag st" data-at="2" style="left:560px;top:20px">FR-001 ↔ test「FR-001 …」</div>
+  </div>
+  <div class="row ja st" data-at="5" style="gap:20px;margin-top:auto">
+    <div class="box grow s24"><b>テストは Spec を書くときに作る</b><br><span class="m">→ 「コードをなぞるテスト」にならない</span></div>
+    <div class="box green grow s24"><b>AI時代: 真ん中はほぼタダ</b><br><span class="m">→ 価値は<b class="g">両側</b>: Spec と 確認</span></div>
+    <div class="box yellow grow s24"><b>小さな V を何回も</b><br><span class="m">→ 機能ごと · ウォーターフォールではない</span></div>
+  </div>
+<style>
+#s-vmodel .vm{position:relative;height:500px;margin-top:6px}
+#s-vmodel .vb{position:absolute;width:330px;border:3px solid;border-radius:var(--wob);background:#fffdf7;padding:12px 18px;line-height:1.3}
+#s-vmodel .vb b{font-size:30px;font-weight:600} #s-vmodel .vb code{font-size:20px;color:var(--mute)} #s-vmodel .vb span{display:block;font-size:21px;color:var(--ink2);margin-top:4px}
+#s-vmodel .vbottom{position:absolute;left:560px;top:385px;width:320px;text-align:center;border:3px solid var(--orange);background:rgba(246,224,143,.45);border-radius:var(--wob2);padding:10px}
+#s-vmodel .vbottom b{font:400 36px var(--title)} #s-vmodel .vbottom span{display:block;font-size:22px}
+#s-vmodel .vline{stroke:var(--green2);stroke-width:3;stroke-dasharray:8 8;fill:none}
+#s-vmodel .vdk{position:absolute;left:0;top:-10px;font-size:22px;color:var(--blue)} #s-vmodel .vvf{position:absolute;right:0;top:-10px;font-size:22px;color:var(--green)}
+#s-vmodel .vtag{position:absolute;font:18px var(--mono);color:var(--green);background:#fffdf7;padding:0 8px;width:320px;text-align:center}
+</style>
+<aside class="notes">
+<div class="nt-cue">⏱ · → 5回 (Code → 要件↔受入 → 設計↔結合 → タスク↔単体 → まとめ)</div>
+<div class="nt-jp">昔からある V-Model で見てみます。
+
+【→】一番下がコード。今は、ここが AI のいちばん速い所です。
+
+【→】左上が要件、spec.md です。User Story、FR、受入シナリオ。
+右上が、それを確かめる受入テストです。Given、When、Then。
+<b>FR-001 には、FR-001 のテスト</b>。左と右がつながっています。
+
+【→】設計の plan.md には、結合テスト。
+【→】タスクには、単体テスト。golden test や境界値です。
+
+【→】ポイントは3つです。
+1つ目。テストは、Spec を書くときに作ります。コードを見て作ると、コードをなぞるだけのテストになります。
+2つ目。AIの時代は、真ん中のコードはほぼタダです。価値は両側、Spec と確認に移ります。
+3つ目。昔の V と違って、機能ごとに小さな V を何回も回します。ウォーターフォールではありません。</div>
+<div class="nt-vi">VN: V-Model: đáy = code (AI nhanh nhất). Trái: spec.md ↔ acceptance (Given/When/Then), plan.md ↔ integration, tasks ↔ unit (golden/biên). FR-001 ↔ test FR-001 (truy vết). 3 ý: test viết khi viết spec (tránh test "copy code"); thời AI code gần như miễn phí → giá trị ở 2 cánh; nhiều V nhỏ theo từng feature, không phải waterfall.</div>
+</aside>
+</section>
+
+<section class="slide" id="s-speckit" data-title="Spec Kit + GitHub で管理" data-part="D. 品質 · Spec first">
+  <h1 class="t ja">道具: <span class="g">Spec Kit</span> + <span class="b">GitHub</span></h1>
+  <svg class="brush"><use href="#brush"/></svg>
+  <div class="sk mt ja">
+    <div class="skc frag" data-f="1">specify<small>何を · なぜ</small></div><i>→</i>
+    <div class="skc frag" data-f="1" style="border-color:var(--red)">clarify<small>👤 人が答える</small></div><i>→</i>
+    <div class="skc frag" data-f="2">plan<small>どう作る</small></div><i>→</i>
+    <div class="skc frag" data-f="2">tasks<small>1タスク=1PR</small></div><i>→</i>
+    <div class="skc frag" data-f="2">analyze<small>ズレのチェック</small></div><i>→</i>
+    <div class="skc frag" data-f="3" style="border-color:var(--orange)">implement<small>テスト先に</small></div>
+  </div>
+  <div class="gh mt2 ja frag" data-f="4">
+    <div class="ghc"><code>tasks.md</code></div><i>— GitHub MCP →</i>
+    <div class="ghc" style="border-color:var(--blue)">Issue <b>#12</b><small>T003 · FR-001</small></div><i>→</i>
+    <div class="ghc" style="border-color:var(--blue)">PR<small>Closes #12</small></div><i>→</i>
+    <div class="ghc" style="border-color:var(--green)">👤 Review → merge</div>
+  </div>
+  <div class="chot ja frag" data-f="5">つながりが見える: <b>FR-001 ↔ Issue #12 ↔ テスト名 ↔ PR</b></div>
+<style>
+.sk,.gh{display:flex;align-items:center;justify-content:center;gap:10px}
+.sk i,.gh i{font-style:normal;font-size:24px;color:var(--mute)}
+.skc,.ghc{border:3px solid var(--ink);border-radius:var(--wob);background:#fffdf7;padding:12px 16px;font:400 30px var(--title);text-align:center;min-width:170px}
+.skc small,.ghc small{display:block;font:20px var(--jp);color:var(--ink2);margin-top:4px}
+.ghc{font-size:28px}
+</style>
+<aside class="notes">
+<div class="nt-cue">⏱ · → 5回 → そのまま DEMO ④ へ</div>
+<div class="nt-jp">これを実際にやる道具です。GitHub の Spec Kit を使います。
+
+【→】specify で、何を作るか、なぜ作るかを書きます。clarify では、AIが質問してきて、<b>人が答えます</b>。
+【→】plan で作り方、tasks で1タスク1PRに分けて、analyze で spec と plan と tasks のズレをチェックします。
+【→】implement では、テストを先に書きます。
+
+【→】管理は GitHub です。tasks.md のタスクを、GitHub MCP で Issue にします。PR は「Closes #12」で Issue につなげます。最後に人がレビューして、マージ。
+
+【→】こうすると、FR-001、Issue、テストの名前、PR が、全部つながって見えます。
+では、実際にやってみます。</div>
+<div class="nt-vi">VN: Spec Kit: specify → clarify (NGƯỜI trả lời) → plan → tasks → analyze → implement (test trước). Quản lý bằng GitHub: tasks.md → Issue qua GitHub MCP → PR "Closes #12" → người review/merge. Truy vết: FR ↔ Issue ↔ tên test ↔ PR. Chuyển sang DEMO ④.</div>
+</aside>
+</section>

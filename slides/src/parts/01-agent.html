@@ -1,0 +1,222 @@
+<!-- ===================== A. AGENT LOOP ===================== -->
+
+<section class="slide divider" id="s-divA" data-title="A: Agentの中身" data-part="A. Agent Loop (8–23')">
+  <div class="big">A</div>
+  <h1 class="ja">Agentの中身を知る</h1>
+  <div class="q ja">Claude Code も Copilot も Cursor も、<br>中身はほぼ同じ<span class="hl">「ループ」</span>です。</div>
+  <div class="map ja"><span class="now">A Loop</span><span>B Guardrails</span><span>C Process</span><span>D Quality</span><span>E Context</span><span>F 概要</span></div>
+<aside class="notes">
+<div class="nt-cue">⏱ 9:00–9:30</div>
+<div class="nt-jp">では、パートAです。エージェントの中身を見ます。
+Claude Code も、Copilot も、Cursor も、Codex も。
+名前は違いますが、中身はほぼ同じ「ループ」です。
+ここが分かると、後の話が全部つながります。</div>
+<div class="nt-vi">VN: Khối A — mọi coding agent đều là cùng một vòng lặp. Hiểu cái này thì phần sau tự nối lại.</div>
+</aside>
+</section>
+
+<section class="slide" id="s-loop" data-title="Agent Loop アニメーション" data-part="A. Agent Loop (8–23')" data-steps="7" style="padding:40px 60px 40px">
+  <div class="row mid" style="gap:20px;margin-bottom:14px">
+    <h1 class="ja" style="font-size:44px">Agent Loop を動かしてみる</h1>
+    <span class="m ja s24">例:「返品期限を過ぎても返金される」バグ修正</span>
+  </div>
+  <div class="dk grow" style="height:720px">
+    <div class="stepbar"></div>
+    <!-- loop diagram -->
+    <svg class="wire" width="780" height="700" style="position:absolute;left:0;top:0">
+      <path d="M232 128 H 300" data-at="hot@=1"/>
+      <path d="M350 186 C 330 290, 330 340, 350 440" data-at="hot@=2 hot@=4 hot@=5 hot@=6"/>
+      <path d="M480 440 C 500 340, 500 290, 480 186" data-at="hot@=3 hot@=4 hot@=5 hot@=6"/>
+      <path d="M530 128 H 600" data-at="hot@=7"/>
+    </svg>
+    <div class="wl" style="left:256px;top:94px">task</div>
+    <div class="wl" style="left:226px;top:300px;color:var(--c-model)">tool_use</div>
+    <div class="wl" style="left:502px;top:300px;color:var(--c-tool)">tool_result</div>
+    <div class="wl" style="left:530px;top:60px">end_turn</div>
+
+    <div class="node user" style="left:40px;top:80px;width:192px;height:96px" data-at="glow@=1"><b>User</b><small>タスクを渡す</small></div>
+    <div class="node model" style="left:300px;top:70px;width:230px;height:116px" data-at="glow@=2 glow@=4 glow@=5 glow@=6"><b>Model</b><small>次に何をするか考える</small></div>
+    <div class="node ok" style="left:600px;top:80px;width:150px;height:96px" data-at="glow@=7"><b>Done</b><small>報告</small></div>
+    <div class="node tool" style="left:300px;top:440px;width:230px;height:130px" data-at="glow@=3 glow@=4 glow@=5 glow@=6"><b>Tools</b><small>実際に実行する</small>
+      <div style="margin-top:8px"><span class="chip">Read</span><span class="chip">Edit</span><span class="chip">Bash</span></div></div>
+
+    <div class="loopctr" style="left:44px;top:250px"><div class="dkt">loop</div><div id="lp-n" class="ctr">0</div></div>
+    <div class="loopctr" style="left:44px;top:420px"><div class="dkt">context</div><div id="lp-t" class="ctr" style="font-size:44px">0k</div><div class="dkt">tokens</div></div>
+    <div class="ja" style="position:absolute;left:40px;bottom:22px;right:830px;font-size:19px;color:var(--dkmute);line-height:1.5">
+      Model は <b style="color:var(--c-model)">考えるだけ</b>。<br>実行は <b style="color:var(--c-tool)">Tools</b>（=ハーネス側）。
+    </div>
+
+    <!-- messages -->
+    <div style="position:absolute;left:790px;top:24px;right:24px;bottom:20px">
+      <div class="dkt" style="margin-bottom:6px">messages[ ] — これが “記憶”</div>
+      <div class="msg user st up" data-at="1"><span class="who">user</span><span class="jp">返品期限(受取から8日)を過ぎても返金される。直して</span></div>
+      <div class="msg model st up" data-at="2"><span class="who">tool_use</span>Read("src/returns/return-service.js")</div>
+      <div class="msg tool st up" data-at="3"><span class="who">result</span>WINDOW = (<span style="color:var(--c-bad)">RETURN_WINDOW_DAYS + 1</span>) * DAY</div>
+      <div class="msg model st up" data-at="4"><span class="who">tool_use</span>Edit: <span style="color:var(--c-bad)">+ 1</span> 削除 · <span style="color:var(--c-bad)">&lt;=</span> → &lt; に変更</div>
+      <div class="msg tool st up" data-at="4"><span class="who">result</span>ok</div>
+      <div class="msg model st up" data-at="5"><span class="who">tool_use</span>Bash("npm test")</div>
+      <div class="msg bad st up" data-at="5"><span class="who">result</span>✖ 1 failed: <span class="jp">BR-09「ちょうど8日後は返品できる」</span></div>
+      <div class="msg model st up" data-at="6"><span class="who">tool_use</span>Edit: &lt; → &lt;= に戻す ; Bash("npm test")</div>
+      <div class="msg ok st up" data-at="6"><span class="who">result</span>✔ 38 passed</div>
+      <div class="msg model st up" data-at="7" style="border-color:var(--c-ok)"><span class="who" style="color:var(--c-ok)">end_turn</span><span class="jp">修正しました。原因は期限判定の「+1日」。テスト38件 pass。</span></div>
+    </div>
+  </div>
+<style>
+#s-loop .wl{position:absolute;font:15px var(--mono);color:var(--dkmute)}
+#s-loop .loopctr{position:absolute;text-align:center;width:150px}
+#s-loop .ctr{font:400 64px var(--title);color:var(--dktx);line-height:1.05}
+#s-loop .msg{font-size:19px;padding:7px 14px;margin:8px 0}
+</style>
+<aside class="notes">
+<div class="nt-cue">⏱ 9:30–14:00 (4.5分) · → 7回。各stepで左の光る場所を指さす</div>
+<div class="nt-jp">実際に動かしてみましょう。
+タスクは「返品期限を過ぎても、返金されてしまう。直して」です。
+
+【→ 1】ユーザーがタスクを渡します。これが最初のメッセージです。
+
+【→ 2】モデルは考えます。でも、モデルは<b>考えるだけ</b>です。自分でファイルは読めません。
+だから「このファイルを読みたい」という <b>tool_use</b> を返します。
+
+【→ 3】実際にファイルを読むのは、Tools、つまりハーネス側です。
+結果がメッセージに追加されます。ここに「+1日」というバグがありますね。
+
+【→ 4】モデルは Edit を頼みます。「+1」を消しました。
+……でも、実はここで、境界を間違えています。
+
+【→ 5】次にテストを実行。<b>1件失敗</b>しました。「ちょうど8日後は返品できる」というテストです。
+
+【→ 6】モデルは失敗の結果を見て、もう一度直します。テストは全部通りました。
+ここが大事です。<b>テストという「フィードバック」があったから、AIは自分の間違いに気づけました。</b>
+
+【→ 7】最後に、tool_use がなくなったら、ループ終了。報告して終わりです。
+
+左の数字を見てください。ループは5回、コンテキストはどんどん増えています。
+この「増えていく」が、パートEの話につながります。</div>
+<div class="nt-vi">VN: Animation 7 bước. Ý chính: model chỉ "nghĩ" và trả về tool_use; harness mới thực thi. Lần sửa đầu sai biên (ngày 8) → test fail → agent tự sửa lại nhờ feedback test. Hết tool_use → dừng. Số loop và token tăng dần → nối sang khối E.</div>
+</aside>
+</section>
+
+<section class="slide" id="s-mincode" data-title="最小のコード" data-part="A. Agent Loop (8–23')">
+  <h1 class="t ja">中身は、たった <span class="g">10行</span></h1>
+  <svg class="brush"><use href="#brush"/></svg>
+  <div class="row mt" style="gap:36px;align-items:flex-start">
+    <pre class="code" style="width:900px;font-size:23px;line-height:1.7;padding:24px 28px">messages = [{<span class="y">"role"</span>: <span class="y">"user"</span>, <span class="y">"content"</span>: task}]
+
+<span class="k">while</span> <span class="b">True</span>:
+    resp = model(system=SYSTEM,       <span class="c"># ① 指示</span>
+                 messages=messages,   <span class="c"># ② 記憶</span>
+                 tools=TOOLS)         <span class="c"># ③ できること</span>
+    messages.append(resp)
+    <span class="k">if</span> resp.stop_reason != <span class="y">"tool_use"</span>:
+        <span class="k">break</span>                         <span class="c"># ④ 終了条件</span>
+    results = [run(call) <span class="k">for</span> call <span class="k">in</span> resp.tool_calls]
+    messages.append({<span class="y">"role"</span>: <span class="y">"user"</span>, <span class="y">"content"</span>: results})</pre>
+    <div class="col grow ja s32" style="gap:22px">
+      <div class="box frag" data-f="1"><b>考える</b> = Model<br><span class="m s24">私たちは選ぶだけ</span></div>
+      <div class="box yellow frag" data-f="2"><b>行動</b> = <code>run(call)</code><br><span class="m s24">ここで<b class="r">止める</b>・<b class="r">記録する</b>ことができる</span></div>
+      <div class="box blue frag" data-f="3"><b>記憶</b> = <code>messages</code><br><span class="m s24">増え続ける → いつか いっぱいになる</span></div>
+    </div>
+  </div>
+  <div class="chot ja frag" data-f="4">ガードレールも、コンテキスト管理も、<b>このループのどこかに入れるだけ</b>。</div>
+<aside class="notes">
+<div class="nt-cue">⏱ 14:00–16:00 (2分) · → 4回</div>
+<div class="nt-jp">コードにすると、本当にこれだけです。約10行。
+メッセージのリストを作って、while ループ。
+モデルを呼んで、tool_use がなければ終わり。あれば、ツールを実行して、結果を戻す。
+
+【→】考えるのは、モデルの仕事です。私たちは選ぶだけです。
+【→】行動は、この <code>run</code> の部分。ここは私たちのコードです。
+だから、ここで<b>止める</b>ことも、<b>記録する</b>こともできます。これがガードレールです。
+【→】記憶は messages。ループのたびに増え続けて、いつか、いっぱいになります。これがコンテキスト管理の問題です。
+
+【→】つまり、ガードレールもコンテキスト管理も、魔法ではありません。
+<b>このループのどこかに、入れるだけ</b>です。</div>
+<div class="nt-vi">VN: Code agent loop ~10 dòng. Trí thông minh = model; hành động = run() (code của mình → chặn/ghi log được = guardrail); bộ nhớ = messages (tăng mãi → tràn = context). Mọi kỹ thuật chỉ là "chèn vào đâu đó trong vòng lặp".</div>
+</aside>
+</section>
+
+<section class="slide" id="s-4parts" data-title="4つの部品" data-part="A. Agent Loop (8–23')">
+  <h1 class="t ja">ループを作る <span class="g">4つの部品</span></h1>
+  <svg class="brush"><use href="#brush"/></svg>
+  <div class="grid4 mt2 ja" style="gap:20px">
+    <div class="box frag" data-f="1" style="padding:24px 24px 28px;border-color:var(--c-model)"><div class="num" style="background:var(--c-model)">①</div>
+      <h3 class="mt3" style="font-size:36px">System prompt</h3><p class="s24" style="margin:0">ルール・役割<br><span class="m">CLAUDE.md / AGENTS.md</span></p>
+      <p class="s24 r" style="margin:10px 0 0">壊れると → ルール無視、毎回違う動き</p><div class="pill b mt3">→ E</div></div>
+    <div class="box frag" data-f="2" style="padding:24px 24px 28px;border-color:var(--c-ctx)"><div class="num" style="background:var(--c-ctx)">②</div>
+      <h3 class="mt3" style="font-size:36px">Messages</h3><p class="s24" style="margin:0">会話・ツール結果<br><span class="m">= Context window</span></p>
+      <p class="s24 r" style="margin:10px 0 0">壊れると → 忘れる · 精度が下がる · コスト増</p><div class="pill b mt3">→ E</div></div>
+    <div class="box frag" data-f="3" style="padding:24px 24px 28px;border-color:var(--c-tool)"><div class="num" style="background:var(--c-tool)">③</div>
+      <h3 class="mt3" style="font-size:36px">Tools</h3><p class="s24" style="margin:0">Read · Edit · Bash · MCP<br><span class="m">= 何ができるか</span></p>
+      <p class="s24 r" style="margin:10px 0 0">壊れると → 危険な操作、本番DB</p><div class="pill b mt3">→ B</div></div>
+    <div class="box frag" data-f="4" style="padding:24px 24px 28px;border-color:var(--c-ok)"><div class="num" style="background:var(--c-ok)">④</div>
+      <h3 class="mt3" style="font-size:36px">Stop condition</h3><p class="s24" style="margin:0">いつ終わるか<br><span class="m">テスト緑? 回数? 予算?</span></p>
+      <p class="s24 r" style="margin:10px 0 0">壊れると → ウソの完了 · 無限ループ</p><div class="pill b mt3">→ C · D</div></div>
+  </div>
+  <div class="chot ja frag" data-f="5">失敗の多くは「モデルが悪い」ではなく、<b>4つの部品のどれかの設計ミス</b>。</div>
+<aside class="notes">
+<div class="nt-cue">⏱ 16:00–18:30 (2.5分) · → 5回</div>
+<div class="nt-jp">ループを作る部品は、4つです。
+
+【→】一つ目、System prompt。ルールや役割です。CLAUDE.md や AGENTS.md がここに入ります。
+これが悪いと、ルールを無視したり、毎回違う動きをしたりします。
+
+【→】二つ目、Messages。会話とツールの結果。つまりコンテキストウィンドウです。
+これが悪いと、前のことを忘れたり、精度が落ちたり、コストが増えたりします。
+
+【→】三つ目、Tools。何ができるか。ファイルを読む、書く、コマンドを実行する。
+ここが一番危ないです。本番DBに触れる、なども起こります。パートBで話します。
+
+【→】四つ目、Stop condition。いつ終わるか。
+ここが弱いと、「終わりました」と<b>ウソの完了</b>をしたり、無限ループになったりします。
+
+【→】私の経験では、失敗の多くは「モデルが悪い」のではありません。
+<b>この4つの部品の、どれかの設計ミス</b>です。</div>
+<div class="nt-vi">VN: 4 bộ phận: system prompt (CLAUDE.md), messages (context), tools (nguy hiểm nhất → B), stop condition (báo xong giả, vòng vô hạn → C/D). Lỗi thường không do model mà do thiết kế 4 phần này.</div>
+</aside>
+</section>
+
+<section class="slide" id="s-harness-map" data-title="ハーネスを入れる場所" data-part="A. Agent Loop (8–23')" data-steps="4">
+  <h1 class="t ja">今日の話は、すべて<span class="g">ループのどこか</span></h1>
+  <svg class="brush"><use href="#brush"/></svg>
+  <div class="row mt" style="gap:34px">
+    <div class="dk" style="width:820px;height:560px">
+      <div class="node user" style="left:30px;top:40px;width:160px;height:80px"><b>User</b></div>
+      <div class="node model" style="left:300px;top:30px;width:220px;height:100px"><b>Model</b></div>
+      <div class="node tool" style="left:300px;top:400px;width:220px;height:100px"><b>Tools</b></div>
+      <div class="node ok" style="left:630px;top:40px;width:160px;height:80px"><b>Done</b></div>
+      <svg class="wire" width="820" height="560" style="position:absolute;left:0;top:0">
+        <path d="M190 80 H300"/><path d="M520 80 H630"/>
+        <path d="M350 130 C330 230,330 300,350 400"/><path d="M470 400 C490 300,490 230,470 130"/>
+      </svg>
+      <div class="hook ja" data-at="1" style="left:20px;top:150px;border-color:var(--c-ctx);color:var(--c-ctx)">E · Context<br><small>CLAUDE.md · compaction · subagent</small></div>
+      <div class="hook ja" data-at="2" style="left:40px;top:300px;border-color:var(--c-bad);color:var(--c-bad)">B · Guardrail<br><small>permission · hook · sandbox</small></div>
+      <div class="hook ja" data-at="3" style="left:560px;top:280px;border-color:var(--c-ok);color:var(--c-ok)">C/D · Feedback<br><small>test · lint · review</small></div>
+      <div class="hook ja" data-at="4" style="left:560px;top:150px;border-color:var(--c-tool);color:var(--c-tool)">C · Stop / Loop<br><small>DoD · 回数 · 予算</small></div>
+    </div>
+    <div class="col grow ja">
+      <div class="box s24">ツールが違っても<br><b>同じ形</b>:</div>
+      <div class="s24" style="line-height:1.9"><span class="pill">Claude Code</span><span class="pill">GitHub Copilot agent</span><span class="pill">Cursor</span><span class="pill">Codex</span><span class="pill">Gemini CLI</span></div>
+      <div class="box yellow s22">→ ツール名より<br><b>仕組み</b>を覚えると、<br>乗り換えても使える</div>
+    </div>
+  </div>
+<style>
+.hook{position:absolute;border:2px dashed;border-radius:12px;padding:6px 14px;font-size:22px;background:rgba(0,0,0,.35);line-height:1.25;opacity:0;transform:scale(.8);transition:all .4s}
+.hook.on{opacity:1;transform:none}
+.hook small{font:14px var(--mono);color:var(--dkmute)}
+</style>
+<aside class="notes">
+<div class="nt-cue">⏱ 18:30–21:00 (2.5分) · → 4回 → その後 Q&amp;A 2分</div>
+<div class="nt-jp">今日の話を、このループの上に置いてみます。
+
+【→】モデルに渡す前の部分。何を見せるか。これがパートE、コンテキストです。
+【→】ツールを実行する前。ここで止められます。パートB、ガードレールです。
+【→】ツールの結果。テストやレビューの結果をモデルに戻す。パートCとD、フィードバックです。
+【→】そして、いつ終わるか。完了の定義、回数、予算。パートCです。
+
+ツールは何でも同じ形です。Claude Code でも、Copilot でも、Cursor でも。
+ツールの名前より、<b>仕組み</b>を覚えてください。乗り換えても、そのまま使えます。
+
+ここまでで、何か質問はありますか？</div>
+<div class="nt-vi">VN: Đặt các khối lên vòng lặp: E trước khi gọi model; B trước khi chạy tool; C/D ở tool result; C ở điều kiện dừng. Mọi tool cùng khuôn → học cơ chế, không học tên tool. Mở Q&A ngắn.</div>
+</aside>
+</section>

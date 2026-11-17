@@ -1,0 +1,207 @@
+<!-- ===================== F. OVERVIEW + CLOSING ===================== -->
+
+<section class="slide divider" id="s-divF" data-title="F: 残りのテーマ (概要)" data-part="F. 概要 · まとめ (109–120')">
+  <div class="big">F</div>
+  <h1 class="ja">残りの3テーマ <span class="m" style="font-size:40px">(概要)</span></h1>
+  <div class="q ja">要件定義 · 設計 / 組織展開 / AIを組み込んだシステム<br><span class="m s24">— 深掘りは次回、または個別にご相談ください</span></div>
+  <div class="map ja"><span>A Loop</span><span>B Guardrails</span><span>C Process</span><span>D Quality</span><span>E Context</span><span class="now">F 概要</span></div>
+<aside class="notes">
+<div class="nt-cue">⏱ 109:00–109:20 · 残り時間を確認。押していたら F1–F3 は各1分に</div>
+<div class="nt-jp">最後のパートです。残りの3つのテーマを、概要だけお話しします。
+どれも、それだけで1回分の勉強会になる内容なので、深掘りは次回、または個別にご相談ください。</div>
+<div class="nt-vi">VN: Khối F lướt 3 chủ đề còn lại; đào sâu để buổi sau/tư vấn riêng. Nếu trễ giờ, mỗi slide 1 phút.</div>
+</aside>
+</section>
+
+<section class="slide" id="s-req" data-title="要件定義 · 設計でのAI活用" data-part="F. 概要 · まとめ (109–120')">
+  <h1 class="t ja">要件定義 · 設計: <span class="g">AIが読める形</span>で残す</h1>
+  <svg class="brush"><use href="#brush"/></svg>
+  <div class="row mt" style="gap:30px;align-items:flex-start">
+    <table class="t ja" style="width:880px;font-size:28px;line-height:1.6">
+      <tr><th>形式</th><th>使いどころ</th><th style="width:220px">AIとの相性</th></tr>
+      <tr><td><b>Markdown</b></td><td>Spec · 設計 · 業務ルール = <b>マスター</b></td><td class="g">◎ diff · review</td></tr>
+      <tr><td><b>Mermaid</b></td><td>状態遷移 · シーケンス図 (テキストで)</td><td class="g">◎</td></tr>
+      <tr><td><b>Excel</b></td><td>表データ · テストケース → <b>CSV</b> で渡す</td><td class="o">○ 変換して</td></tr>
+      <tr><td><b>PowerPoint</b></td><td>説明 · 合意用。<b>マスターにしない</b></td><td class="r">△</td></tr>
+    </table>
+    <div class="col grow ja s32">
+      <div class="box"><b>ズレをなくすコツ</b><br>ID でつなぐ:<br><code>BR-09</code> ↔ チケット ↔ テスト名</div>
+      <div class="box green">AIに<b>ズレをチェック</b>させる<br><span class="m">「spec と tasks と test でズレている所は？」</span></div>
+    </div>
+  </div>
+  <div class="paper mono mt2" style="font-size:22px">stateDiagram-v2:  注文済 → 決済済 → 発送済 → 受取済 → 返品申請 → 返金済   <span class="ja" style="font-family:var(--jp);color:var(--mute)">(決済失敗: 注文済 → キャンセル)</span></div>
+<aside class="notes">
+<div class="nt-cue">⏱ 109:20–110:50 (1.5分)</div>
+<div class="nt-jp">要件定義と設計です。ポイントは、<b>AIが読める形で残す</b>ことです。
+
+Markdown は、spec や設計、業務ルールのマスターにします。diff が見えて、レビューできます。
+図は Mermaid のように、テキストで書きます。
+Excel は表データやテストケースに便利ですが、AIに渡す時は CSV にします。
+PowerPoint は説明や合意のためのもの。マスターにはしません。
+
+設計書どうしのズレをなくすには、ID でつなぐのがコツです。業務ルールの ID を、チケットとテストの名前に入れます。
+そして、AIに「spec と tasks と test で、ズレている所は？」とチェックさせます。これはAIが得意な仕事です。</div>
+<div class="nt-vi">VN: Markdown = bản gốc (spec/thiết kế/luật); Mermaid cho sơ đồ dạng text; Excel → CSV khi đưa AI; PowerPoint chỉ để giải thích, không làm bản gốc. Giữ nhất quán: nối bằng ID (BR-09 ↔ ticket ↔ tên test); cho AI kiểm tra mâu thuẫn spec/tasks/test.</div>
+</aside>
+</section>
+
+<section class="slide" id="s-org" data-title="組織展開" data-part="F. 概要 · まとめ (109–120')">
+  <h1 class="t ja">組織展開: <span class="g">人</span>ではなく<span class="g">リポジトリ</span>に知識を</h1>
+  <svg class="brush"><use href="#brush"/></svg>
+  <div class="flow mt ja" style="font-size:30px">
+    <div class="step box"><b>① 小さく試す</b><br><span class="s24 m">1チーム · 1機能 · 2週間</span></div><div class="arrow">→</div>
+    <div class="step box"><b>② 型にする</b><br><span class="s24 m">CLAUDE.md · hooks · skills<br>チケット雛形 · チェックリスト</span></div><div class="arrow">→</div>
+    <div class="step box"><b>③ 広げる</b><br><span class="s24 m">テンプレートリポジトリ<br>推進する人 (champion)</span></div><div class="arrow">→</div>
+    <div class="step box"><b>④ 測る · 直す</b><br><span class="s24 m">失敗共有会 (週1)<br>PR単価 · リードタイム</span></div>
+  </div>
+  <div class="row mt2 ja" style="gap:26px">
+    <div class="box green grow"><b class="g">うまくいきやすい</b><ul class="clean s32" style="line-height:1.6"><li class="ck">現場の困りごとから始める</li><li class="ck">設定をリポジトリで共有 → 1人に頼らない</li><li class="ck">失敗を共有して、仕組みを足す</li></ul></div>
+    <div class="box red grow"><b class="r">うまくいきにくい</b><ul class="clean s32" style="line-height:1.6"><li class="xx">ツールを配るだけ</li><li class="xx">上から「全員使え」</li><li class="xx">「AIで書いた行数」をKPIに</li></ul></div>
+  </div>
+  <div class="fict ja">※ 私たちの支援経験からの傾向（定量データではありません）</div>
+<aside class="notes">
+<div class="nt-cue">⏱ 110:50–112:20 (1.5分)</div>
+<div class="nt-jp">組織への展開です。一言で言うと、知識を「人」ではなく「リポジトリ」に置くことです。
+
+まず小さく試す。1チーム、1機能、2週間。
+うまくいったら型にする。CLAUDE.md、hooks、チケットの雛形、チェックリスト。
+それをテンプレートのリポジトリにして、推進役の人が広げる。
+そして、測って、直す。週に1回、失敗を共有する会をすると効果的です。
+
+うまくいきやすいのは、現場の困りごとから始めること。設定をリポジトリで共有すること。これで、1人に頼らない形にできます。
+うまくいきにくいのは、ツールを配るだけ。上から「全員使え」。そして「AIで書いた行数」をKPIにすること。
+
+これは私たちの経験からの傾向で、定量的なデータではありません。</div>
+<div class="nt-vi">VN: Triển khai tổ chức: thử nhỏ (1 team, 1 tính năng, 2 tuần) → đóng gói (CLAUDE.md, hooks, skills, template, checklist) → lan rộng (template repo, champion) → đo & sửa (họp chia sẻ thất bại hàng tuần). Hiệu quả: bắt đầu từ pain thật, config trong repo (chống phụ thuộc cá nhân). Kém: chỉ phát tool, ép từ trên, KPI số dòng AI. Đây là kinh nghiệm, không phải số liệu.</div>
+</aside>
+</section>
+
+<section class="slide" id="s-aisys" data-title="AIを組み込んだシステム" data-part="F. 概要 · まとめ (109–120')">
+  <h1 class="t ja">AIを組み込んだシステム: <span class="g">どれを選ぶ？</span></h1>
+  <svg class="brush"><use href="#brush"/></svg>
+  <div class="row mt" style="gap:28px;align-items:flex-start">
+    <div class="col ja" style="width:720px">
+      <div class="box"><h3>RAG か Fine-tuning か</h3>
+        <ul class="clean s24" style="font-size:26px;line-height:1.6"><li class="ck"><b>まず Prompt + RAG</b> — 情報がよく変わる · 情報の元を見せたい</li>
+          <li class="ck"><b>Fine-tuning</b> — 形式 · 話し方 · 分類を<b>大量に</b>安定させたい時だけ</li>
+          <li class="ck">多くの場合: <b>RAG で知識、Prompt で動き方</b></li></ul></div>
+      <div class="box blue"><h3 class="b">どちらでも必須: Eval</h3><span class="s24">「正解の例」を50〜100件 → 変更のたびに自動評価<br>= AI機能の<b>テスト</b></span></div>
+    </div>
+    <div class="col grow ja">
+      <div class="box"><h3>外部API か 自社運用か</h3>
+        <table class="t s22" style="font-size:25px"><tr><th></th><th>外部API</th><th>自社運用</th></tr>
+          <tr><td>立ち上げ</td><td class="g">速い</td><td class="r">遅い</td></tr>
+          <tr><td>性能</td><td class="g">最新</td><td>モデル次第</td></tr>
+          <tr><td>データ</td><td>契約 · 地域を確認</td><td class="g">社内に閉じる</td></tr>
+          <tr><td>運用負荷</td><td class="g">低い</td><td class="r">GPU · モニタリング · 更新</td></tr></table></div>
+      <div class="box yellow s24"><b>工数 · コストの見積もり</b>: PoC で <b>1件あたりのトークン × 件数</b> を実際に測ってから</div>
+    </div>
+  </div>
+<aside class="notes">
+<div class="nt-cue">⏱ 112:20–113:50 (1.5分)</div>
+<div class="nt-jp">AIを組み込んだシステムについてです。
+
+RAG とファインチューニング、どちらを使うか。まずは Prompt と RAG から始めてください。
+情報がよく変わる時や、情報の元を見せたい時は RAG です。
+ファインチューニングは、形式や話し方、分類を、大量に安定させたい時だけです。
+多くの場合、知識は RAG、動き方は Prompt、という組み合わせで十分です。
+
+どちらでも必須なのは Eval です。正解の例を50件から100件作って、変更のたびに自動で評価します。AI機能にとっての「テスト」です。
+
+外部APIか、自社運用か。外部APIは速く始められて、性能も最新です。データの扱いは、契約と地域を確認してください。
+自社運用はデータを社内に閉じられますが、GPU、モニタリング、更新と、運用の負担が大きいです。
+
+コストは、PoC で「1件あたりのトークン × 件数」を実際に測ってから見積もるのがおすすめです。</div>
+<div class="nt-vi">VN: RAG vs fine-tune: bắt đầu Prompt + RAG (dữ liệu hay đổi, cần nguồn); fine-tune chỉ khi cần ổn định format/giọng/phân loại số lượng lớn. Bắt buộc Eval (50–100 ví dụ chuẩn, tự đánh giá mỗi lần đổi). API ngoài vs tự vận hành: nhanh/mới nhất vs dữ liệu nội bộ nhưng nặng vận hành; kiểm tra hợp đồng/vùng dữ liệu. Ước tính chi phí = token/lần × số lần đo thật ở PoC.</div>
+</aside>
+</section>
+
+<section class="slide" id="s-ladder" data-title="成熟度レベル" data-part="F. 概要 · まとめ (109–120')">
+  <h1 class="t ja">皆さんのチームは、<span class="g">今どこ？</span></h1>
+  <svg class="brush"><use href="#brush"/></svg>
+  <div class="ladder mt2 ja">
+    <div class="lv1 frag" data-f="1" style="--h:220px;--c:#b8ae98"><b>Lv1</b><i>個人のコツ</i><span>チャットで相談<br>コピペ · 目で確認</span></div>
+    <div class="lv1 frag" data-f="2" style="--h:300px;--c:var(--orange)"><b>Lv2</b><i>ガードレール</i><span>CLAUDE.md · hooks<br>CI · レビュー観点</span></div>
+    <div class="lv1 frag" data-f="3" style="--h:380px;--c:var(--blue)"><b>Lv3</b><i>Spec ドリブン</i><span>業務ルールを文書化<br>チケット = 1 PR<br>golden test</span></div>
+    <div class="lv1 frag" data-f="4" style="--h:460px;--c:var(--green)"><b>Lv4</b><i>Loop · 並列</i><span>worktree 並列<br>長時間ハーネス<br>コスト · 品質を測る</span></div>
+  </div>
+<style>
+.ladder{display:flex;align-items:flex-end;justify-content:center;gap:24px;height:520px}
+.ladder .lv1{width:300px;height:var(--h);border:3px solid var(--c);border-radius:var(--wob);background:#fffdf7;display:flex;flex-direction:column;align-items:center;padding:16px;text-align:center;box-shadow:inset 0 -12px 0 var(--c)}
+.ladder b{font:400 46px var(--title);color:var(--c)} .ladder i{font-style:normal;font-size:28px;font-weight:600}
+.ladder span{font-size:25px;color:var(--ink2);margin-top:8px;line-height:1.5}
+</style>
+<aside class="notes">
+<div class="nt-cue">⏱ 113:50–115:00 (1分) · → 4回 · 「どこにいると思いますか？」と聞く</div>
+<div class="nt-jp">今日の内容を、4つのレベルにまとめました。
+
+【→】レベル1。個人のコツ。チャットで相談して、コピペして、目で確認。
+【→】レベル2。ガードレール。CLAUDE.md、hooks、CI、レビューの観点がある。
+【→】レベル3。Spec ドリブン。業務ルールが文書になっていて、チケットが1PRの大きさで、golden test がある。
+【→】レベル4。ループと並列。worktree で並列に回し、長時間のハーネスがあり、コストと品質を測っている。
+
+皆さんのチームは、今どこだと思いますか？
+いきなりレベル4を目指す必要はありません。<b>1つ上に上がる</b>ことを考えてください。</div>
+<div class="nt-vi">VN: Thang trưởng thành 4 mức: Lv1 mẹo cá nhân; Lv2 guardrail (CLAUDE.md, hooks, CI, checklist); Lv3 spec-driven (luật thành văn, ticket = 1 PR, golden test); Lv4 loop & song song (worktree, harness dài hạn, đo chi phí/chất lượng). Hỏi khán giả đang ở đâu; chỉ cần lên 1 bậc.</div>
+</aside>
+</section>
+
+<section class="slide" id="s-takeaway" data-title="持ち帰り3つ" data-part="F. 概要 · まとめ (109–120')">
+  <h1 class="t ja">今日の持ち帰り <span class="g">3つ</span></h1>
+  <svg class="brush"><use href="#brush"/></svg>
+  <div class="col mt2 ja" style="gap:22px">
+    <div class="tw frag" data-f="1"><span class="num" style="width:64px;height:64px;font-size:34px">1</span><div><b>「お願い」を「仕組み」に</b><br><span>Prompt → hook · sandbox · CI。完了の定義は exit code。</span></div></div>
+    <div class="tw frag" data-f="2"><span class="num" style="width:64px;height:64px;font-size:34px">2</span><div><b>チケットは「人がレビューできる大きさ」</b><br><span>受入条件はコマンドで。同時に進める数はレビューできる数まで。</span></div></div>
+    <div class="tw frag" data-f="3"><span class="num" style="width:64px;height:64px;font-size:34px">3</span><div><b>業務ルールは人が決めて、ファイルに書く</b><br><span>TBD は「勝手に決めず、質問」。AIは決める人ではない。</span></div></div>
+  </div>
+  <div class="box yellow ja mt frag" data-f="4" style="font-size:26px"><b>2週間チャレンジ</b>:
+    Week 1 — CLAUDE.md 30行 + hook 1つ + レビューチェックリスト ／ Week 2 — 1機能を Spec → チケット → エージェント で。PR単価とレビュー時間を測る</div>
+<style>
+.tw{display:flex;gap:24px;align-items:center;border:2.5px solid var(--ink);border-radius:var(--wob);background:#fffdf7;padding:18px 28px}
+.tw b{font-size:36px;font-weight:600} .tw div span{font-size:26px;color:var(--ink2)}
+</style>
+<aside class="notes">
+<div class="nt-cue">⏱ 115:00–117:00 (2分) · → 4回</div>
+<div class="nt-jp">今日の持ち帰りは、3つだけです。
+
+【→】1つ目。「お願い」を「仕組み」に。プロンプトに書くだけでなく、hook、sandbox、CI にする。完了の定義は exit code。
+
+【→】2つ目。チケットは、人がレビューできる大きさに。受入条件はコマンドで。並列の数の上限は、レビューできる数。
+
+【→】3つ目。業務ルールは人が決めて、ファイルに書く。未決定のことは「勝手に決めず、質問」。<b>AIは、決める人ではありません。</b>
+
+【→】もしよければ、2週間チャレンジをしてみてください。
+1週目は、CLAUDE.md を30行、hook を1つ、レビューのチェックリスト。
+2週目は、1つの機能を、Spec からチケット、エージェントの順でやってみる。そして、PR1本あたりのコストと、レビューの時間を測ってください。</div>
+<div class="nt-vi">VN: 3 điều mang về: (1) biến "nhờ" thành "cơ chế", DoD = exit code; (2) ticket cỡ người review được, tiêu chí bằng lệnh, song song ≤ năng lực review; (3) luật nghiệp vụ do người quyết, ghi file, TBD thì hỏi — AI không phải người quyết định. Thử thách 2 tuần.</div>
+</aside>
+</section>
+
+<section class="slide" id="s-end" data-title="Q&A · ありがとうございました" data-part="F. 概要 · まとめ (109–120')">
+  <div class="row mid" style="height:100%;gap:50px">
+    <div class="grow ja">
+      <h1 style="font:600 80px var(--jp);line-height:1.2">ありがとう<br>ございました</h1>
+      <svg class="brush" style="margin:14px 0 0;width:70%"><use href="#brush"/></svg>
+      <p class="s40" style="margin:26px 0 0;font-family:var(--title)">Q &amp; A</p>
+      <p class="s24 m" style="margin-top:20px">AIは魔法ではなく、増幅器。<br>良い仕組みを、一緒に作りましょう。</p>
+    </div>
+    <div class="box ja" style="width:560px">
+      <h3>📦 今日のデモリポジトリ <code>ec-demo</code></h3>
+      <ul class="clean s24"><li class="ck">業務ルール (BR / TBD)</li><li class="ck">CLAUDE.md · hook の例</li><li class="ck">チケット分解 (DAG) · テンプレート</li><li class="ck">レビュー演習 · チェックリスト</li><li class="ck">golden test</li></ul>
+      <p class="m s22" style="margin:10px 0 0">依存なし · <code>npm test</code> だけで動きます</p>
+    </div>
+  </div>
+<aside class="notes">
+<div class="nt-cue">⏱ 117:00–120:00 · Q&amp;A · リポジトリ共有方法を伝える</div>
+<div class="nt-jp">以上です。ありがとうございました。
+
+もう一度だけ。AIは魔法ではなく、増幅器です。良い仕組みを、ぜひ一緒に作っていきましょう。
+
+今日のデモで使ったリポジトリは、後で共有します。
+業務ルール、CLAUDE.md、hook、チケット分解、レビュー演習、全部入っています。依存パッケージなしで、npm test だけで動きます。
+
+では、最後に質問があれば、どうぞ。
+（日本語が難しい時）すみません、もう一度ゆっくりお願いできますか？ ／ 確認して、後ほど共有します。</div>
+<div class="nt-vi">VN: Cảm ơn, nhắc thông điệp "bộ khuếch đại". Repo ec-demo sẽ chia sẻ sau (luật, CLAUDE.md, hook, chia ticket, bài review, golden test; chỉ cần npm test). Q&A cuối. Câu cứu nguy: "もう一度ゆっくりお願いできますか" / "確認して、後ほど共有します".</div>
+</aside>
+</section>

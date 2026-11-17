@@ -1,0 +1,35 @@
+diff --git a/src/returns/refund-service.js b/src/returns/refund-service.js
+index ed931cb..6ed79bf 100644
+--- a/src/returns/refund-service.js
++++ b/src/returns/refund-service.js
+@@ -5,10 +5,14 @@ import { calcRefundAmount } from './refund-calc.js';
+ // 返金サービス。同じ返品に対して返金は1回だけ (冪等, BR-13)
+ export function createRefundService({ gateway, clock }) {
+   const completed = new Map(); // idempotencyKey -> 返金結果
++  const log = []; // 返金ログ (追跡用)
+ 
+   return {
++    log,
++
+     refund(order, ret) {
+-      const key = `refund:${ret.id}`; // 冪等キー = 返品ID
++      const at = clock();
++      const key = `refund:${ret.id}:${at}`; // 冪等キー (処理単位で一意)
+       if (completed.has(key)) return completed.get(key);
+ 
+       const amount = calcRefundAmount(order, ret.lines);
+@@ -22,11 +26,12 @@ export function createRefundService({ gateway, clock }) {
+       order.refundedTotal += amount;
+       ret.status = '返金済';
+       if (order.status === ORDER_STATUS.RETURN_REQUESTED) {
+-        transition(order, ORDER_STATUS.REFUNDED, clock());
++        transition(order, ORDER_STATUS.REFUNDED, at);
+       }
+ 
+-      const result = { refundId: res.refundId, returnId: ret.id, amount, at: clock() };
++      const result = { refundId: res.refundId, returnId: ret.id, amount, at };
+       completed.set(key, result);
++      log.push({ key, orderId: order.id, ...result });
+       return result;
+     },
+   };

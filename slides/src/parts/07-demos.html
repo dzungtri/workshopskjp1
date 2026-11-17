@@ -1,0 +1,241 @@
+<!-- ===================== LIVE DEMOS (break slides → terminal) =====================
+     Runbook: ../ec-demo/demo/RUNBOOK.md   Reset: ../ec-demo/demo/reset.sh
+-->
+
+<section class="slide demo" id="s-demo1" data-title="DEMO ① エージェントがバグを直す" data-part="A. Agent Loop">
+  <div class="demo-badge">DEMO ①</div>
+  <h1 class="ja">エージェントに<span class="y">バグを直させる</span></h1>
+  <div class="row mt" style="gap:30px;align-items:stretch">
+    <div class="dbox grow">
+      <div class="dkt">terminal</div>
+      <div class="cmd">$ ./demo/reset.sh d1 &amp;&amp; claude</div>
+      <div class="dkt mt">prompt</div>
+      <div class="prompt ja">返品期限（受取から8日）を過ぎても返金されてしまいます。原因を調べて直してください。</div>
+    </div>
+    <div class="dbox" style="width:560px">
+      <div class="dkt">見るポイント</div>
+      <ul class="dl ja"><li><b>Read → Edit → Bash</b> のループ</li><li>テストの<b>失敗</b>を見て、自分で直す</li><li><code>tool_use</code> がなくなったら終わり</li></ul>
+    </div>
+  </div>
+  <div class="demo-foot ja">⏱ 約6分 · 終わったら次のスライドで中身を説明します</div>
+<aside class="notes">
+<div class="nt-cue">DEMO ① 6分 · 操作: reset.sh d1 → claude → プロンプトをコピペ
+待ち時間: 画面の tool call を指さして説明</div>
+<div class="nt-jp">では、実際に動かしてみます。
+
+ここに、「返品期限を過ぎても返金されてしまう」というバグがあるブランチがあります。
+エージェントにお願いするのは、この一文だけです。
+
+（コピペして実行 · 試したときは約40秒）
+
+見てください。まず git の履歴とファイルを読んでいます。Read です。
+次に、テストを実行して、バグを<b>再現</b>しています。Bash です。1件失敗しました。
+そして、境界のテスト「8日と1秒は拒否」を<b>先に追加</b>してから、コードを直しています。
+最後に、全部のテストと lint を実行しました。
+
+テストが全部通って、tool_use がなくなったので、終わりました。
+今のが Agent Loop です。次のスライドで、中で何が起きていたかを見ます。</div>
+<div class="nt-vi">VN thao tác: (1) cd ec-demo; ./demo/reset.sh d1; claude (2) copy prompt từ slide/RUNBOOK (3) trong lúc chạy, chỉ vào Read/Edit/Bash, test fail → tự sửa (4) nếu chạy lâu: vừa chờ vừa giải thích tool call trên màn hình. Lưu ý: Stop hook sẽ tự chạy npm test khi agent định kết thúc.</div>
+</aside>
+</section>
+
+<section class="slide demo" id="s-demo2" data-title="DEMO ② ガードレールが止める" data-part="B. 本番運用 · Guardrails">
+  <div class="demo-badge">DEMO ②</div>
+  <h1 class="ja">ガードレールが<span class="y">止める</span>ところを見る</h1>
+  <div class="row mt" style="gap:30px;align-items:stretch">
+    <div class="dbox grow">
+      <div class="dkt">terminal</div>
+      <div class="cmd">$ ./demo/reset.sh d2 &amp;&amp; claude</div>
+      <div class="dkt mt">prompt</div>
+      <div class="dkt mt">A: 未決定のルール</div>
+      <div class="prompt ja" style="font-size:24px">決済が失敗したら、3回までリトライするようにしてください。</div>
+      <div class="dkt mt">B: 保護されたファイル</div>
+      <div class="prompt ja" style="font-size:24px">src/payment/fake-gateway.js の charge() に、呼び出しログを追加してください。</div>
+    </div>
+    <div class="dbox" style="width:560px">
+      <div class="dkt">見るポイント</div>
+      <ul class="dl ja"><li>A: <b>TBD-03</b> (未決定) → コードを書かずに<b>質問</b></li><li>B: <code>src/payment/</code> → <b>hook がブロック</b></li><li>AIは「承認してください」と<b>人に聞く</b></li></ul>
+    </div>
+  </div>
+  <div class="demo-foot ja">⏱ 約6分 · 最後に <code>.claude/settings.json</code> を見せる</div>
+<aside class="notes">
+<div class="nt-cue">DEMO ② 7分 · 操作: reset.sh d2 → claude → プロンプト → (結果を見る) → settings.json を cat で見せる</div>
+<div class="nt-jp">次は、ガードレールが止めるところを見ます。お願いを2つします。
+
+Aは「決済が失敗したら、3回までリトライして」。
+リトライするかどうかは、業務ルールでまだ決まっていません。TBD です。
+
+（実行 · 約15秒）
+……コードを1行も書かずに、質問してきました。
+「TBD-03 は未決定です。PO に確認してください」と。CLAUDE.md の一行が効いています。
+
+Bは「決済のファイルにログを追加して」。決済のフォルダは、hook で保護しています。
+
+（実行）
+……hook がブロックしました。メッセージがAIに返って、AIは「承認をください」と聞いています。
+
+最後に設定を見せます。これだけです。10分で作れます。</div>
+<div class="nt-vi">VN: Chạy thử thật: A (retry = TBD-03) → agent KHÔNG viết code, dừng hỏi PO (~15s). Nếu tiếp tục nói "PO đã duyệt" thì agent tự viết test trước rồi làm trong order-service.js (không đụng payment) — không cần show. B (sửa src/payment) → PreToolUse hook chặn exit 2 → agent xin phê duyệt. Cuối: cat .claude/settings.json.</div>
+</aside>
+</section>
+
+<section class="slide demo" id="s-demo3" data-title="DEMO ③ チケット分解と並列" data-part="C. 開発プロセス">
+  <div class="demo-badge">DEMO ③</div>
+  <h1 class="ja">チケットに分けて、<span class="y">同時に</span>進める</h1>
+  <div class="row mt" style="gap:30px;align-items:stretch">
+    <div class="dbox grow">
+      <div class="dkt">① plan mode (Shift+Tab)</div>
+      <div class="prompt ja" style="font-size:24px">返品に「返品理由（不良品 · サイズ違い · その他）」を追加したい。docs/tasks/ticket-template.md の形でチケットに分けて、依存関係も書いて。まだ実装しないで。</div>
+      <div class="dkt mt">② 2つの worktree で同時に</div>
+      <div class="cmd" style="font-size:19px">$ ./demo/reset.sh d3   <span style="color:var(--dkmute)"># worktree T1, T2 を作る</span></div>
+    </div>
+    <div class="dbox" style="width:520px">
+      <div class="dkt">見るポイント</div>
+      <ul class="dl ja"><li>チケットに<b>触ってよいファイル</b>と<b>受入条件</b>があるか</li><li>決めていないこと (TBD) を<b>聞いてくる</b>か</li><li>2つのターミナルで<b>同時に</b>動く</li></ul>
+    </div>
+  </div>
+  <div class="demo-foot ja">⏱ 約6分</div>
+<aside class="notes">
+<div class="nt-cue">DEMO ③ 6分 · ① plan mode でチケット分解 (2分) → ② reset.sh d3 → ターミナル2つで claude (各チケット) → 1つ終わるまで待たずに次スライドへ戻ってもOK</div>
+<div class="nt-jp">では、チケットに分けるところを見ます。
+plan mode にして、「返品理由を追加したい。テンプレートの形でチケットに分けて。まだ実装しないで」とお願いします。
+
+（結果を見ながら）
+チケットごとに、触ってよいファイル、受入条件のコマンド、依存関係が書いてありますね。
+返品理由の種類を、勝手に増やしていないか。決めていないことを聞いてくるか。ここを人がチェックします。
+
+次に、依存関係のない2つを、別々の worktree で同時に動かします。
+左と右、2つのエージェントが、別のブランチで、同時に作業しています。
+
+終わるまで少しかかるので、スライドに戻って、ループの止まり方の話をします。</div>
+<div class="nt-vi">VN: (1) Shift+Tab vào plan mode, dán prompt → agent chia ticket theo template (xem: file được chạm, tiêu chí bằng lệnh, dependency, có hỏi TBD không). (2) reset.sh d3 tạo 2 worktree .worktrees/T1 T2 (lệnh cd được in ra); mở 2 terminal, mỗi bên claude + prompt ticket trong RUNBOOK. Không cần chờ xong — quay lại slide, cuối khối C liếc lại kết quả.</div>
+</aside>
+</section>
+
+
+
+<section class="slide demo" id="s-demo4" data-title="DEMO ④ Spec Kit → GitHub Issues" data-part="D. 品質 · Spec first">
+  <div class="demo-badge">DEMO ④</div>
+  <h1 class="ja">Spec を書かせて、<span class="y">Issue</span> にする</h1>
+  <div class="row mt" style="gap:30px;align-items:stretch">
+    <div class="dbox grow">
+      <div class="dkt">① specify (約1.5分)</div>
+      <div class="cmd">$ ./demo/reset.sh d4 &amp;&amp; claude</div>
+      <div class="prompt ja" style="font-size:23px;margin-top:8px">/speckit-specify 返品申請に「返品理由」を追加したい。理由は 不良品・サイズ違い・イメージ違い・その他。理由によって返金のルールが変わる可能性がある。</div>
+      <div class="dkt mt">② 準備した plan / tasks → GitHub Issues</div>
+      <div class="cmd" style="font-size:20px">$ ./demo/reset.sh d4-cook</div>
+      <div class="prompt ja" style="font-size:22px;margin-top:8px">specs/001-return-reason/tasks.md の Phase 1〜2 のタスクを、GitHub MCP で issue にして。タイトルにタスクID、本文に User Story / FR を書いて。</div>
+    </div>
+    <div class="dbox" style="width:480px">
+      <div class="dkt">見るポイント</div>
+      <ul class="dl ja"><li><b>Given / When / Then</b> = 受入テストの元</li><li><b>NEEDS CLARIFICATION</b><br>= 人が決めること (A/B/C)</li><li>Issue に <b>FR</b> がつながる</li></ul>
+    </div>
+  </div>
+  <div class="demo-foot ja">⏱ 約6分 · plan/tasks は時間がかかるので「準備しておいたもの」を使う (料理番組方式)</div>
+<aside class="notes">
+<div class="nt-cue">DEMO ④ 6分 · ① specify ライブ (約90秒、待つ間に V-Model を指して話す) → spec.md を開く → ② 別ターミナルで reset.sh d4-cook → Issue 作成プロンプト → GitHub の画面で Issue を見せる</div>
+<div class="nt-jp">では、Spec first を実際にやります。
+Spec Kit に、「返品理由を追加したい」とだけ伝えます。
+
+（実行 · 約1分半）
+待っている間に、もう一度 V-Model を見てください。今、左上の「要件」を作っています。
+
+（spec.md を開いて）
+User Story があって、受入シナリオが Given、When、Then で書いてあります。これがそのまま、受入テストになります。
+そして、ここ。NEEDS CLARIFICATION。
+「返品理由の不良品と、商品状態の不良品は同じですか？ A、B、C」。
+<b>AIは勝手に決めずに、人に選ばせています。</b>ここが、人の仕事です。
+
+plan と tasks は時間がかかるので、料理番組のように、準備しておいたものを使います。
+（d4-cook）
+最後に、タスクを GitHub の Issue にします。GitHub MCP を使います。
+（GitHub の画面）Issue ができました。本文に User Story と FR が書いてあります。
+これで、要件、Issue、テスト、PR がつながります。</div>
+<div class="nt-vi">VN: (1) reset.sh d4; claude; /speckit-specify ... (~90s, chạy thử thật: ra spec có 3 User Story, Given/When/Then, FR-001..010, 3 NEEDS CLARIFICATION có lựa chọn A/B/C). Trong lúc chờ nói về V-Model. (2) terminal khác: reset.sh d4-cook (thay bằng spec/plan/tasks đã chuẩn bị). (3) prompt tạo issue qua GitHub MCP vào repo dzungtri/workshopskjp1 → mở trang Issues trên GitHub. Cần: GitHub MCP đã cấu hình trong Claude Code + repo có remote.</div>
+</aside>
+</section>
+
+<section class="slide demo" id="s-demo5" data-title="DEMO ⑤ AIレビューとテスト先行" data-part="D. 品質 · Spec first">
+  <div class="demo-badge">DEMO ⑤</div>
+  <h1 class="ja">テストは緑。<span class="y">AIのレビュー</span>は見つけられる？</h1>
+  <div class="row mt" style="gap:30px;align-items:stretch">
+    <div class="dbox grow">
+      <div class="dkt">terminal</div>
+      <div class="cmd">$ ./demo/reset.sh d5 &amp;&amp; npm test   <span style="color:var(--c-ok)"># 全部 green</span></div>
+      <div class="dkt mt">① 新しいセッションでレビュー</div>
+      <div class="prompt ja" style="font-size:24px">main との差分をレビューしてください。docs/review-checklist.md を使って、マージしてよいか判断して。</div>
+      <div class="dkt mt">② テストを先に</div>
+      <div class="prompt ja" style="font-size:24px">二重返金を再現する、失敗するテストを先に書いて。そのあと直して。</div>
+    </div>
+    <div class="dbox" style="width:500px">
+      <div class="dkt">見るポイント</div>
+      <ul class="dl ja"><li>AIは<b>二重返金</b>に気づくか？</li><li>テスト: <b class="r">赤</b> → 修正 → <b class="g">緑</b></li><li>最後に判断するのは<b>人</b></li></ul>
+    </div>
+  </div>
+  <div class="demo-foot ja">⏱ 約4分</div>
+<style>.dbox .r{color:var(--c-bad)} .dbox .g{color:var(--c-ok)}</style>
+<aside class="notes">
+<div class="nt-cue">DEMO ⑤ 4分 · 前のスライド (演習) で答えを言わずに来る → reset.sh d5 → npm test (green) → claude で①レビュー → ②テスト先行</div>
+<div class="nt-jp">さっきの演習のPRです。まず、テストを実行します。……全部、緑ですね。
+
+では、新しいセッションで、AIにレビューをお願いします。チェックリストを使って、と指示します。
+
+（結果を見ながら）
+AIは二重返金に気づいたでしょうか。
+（試したときは、約30秒で気づきました）
+気づきました。しかも、時計を1秒進めて、実際に二重返金を再現しています。チェックリストの「2回実行」の項目が効いています。
+でも、マージするかを最後に決めるのは人です。
+
+次に、直し方です。いきなり直すのではなく、<b>まず失敗するテストを書かせます</b>。
+……テストが赤になりました。バグを再現できた、ということです。
+それから直して、緑になりました。
+人がレビューするのは、このテストです。短くて、意図が読めます。</div>
+<div class="nt-vi">VN: Trước demo KHÔNG nói đáp án ở slide bài tập. (1) npm test xanh. (2) session mới: review theo checklist → chạy thử thật: ~30s AI phát hiện, tự viết script tái hiện (返金 4,356円), kết luận マージ不可. (3) bắt viết test fail trước → đỏ → sửa → xanh. Người review test.</div>
+</aside>
+</section>
+
+<section class="slide demo" id="s-demo6" data-title="DEMO ⑥ Context を見る" data-part="E. Context · Token">
+  <div class="demo-badge">DEMO ⑥</div>
+  <h1 class="ja">Context の中身を<span class="y">見てみる</span></h1>
+  <div class="row mt" style="gap:30px;align-items:stretch">
+    <div class="dbox grow">
+      <div class="dkt">① 今の context</div>
+      <div class="cmd">/context</div>
+      <div class="dkt mt">② subagent で調査</div>
+      <div class="prompt ja" style="font-size:24px">subagent を使って、返金処理がどこから呼ばれているか調べて、要点だけ教えて。</div>
+      <div class="dkt mt">③ 指示付きで compact</div>
+      <div class="cmd ja" style="font-size:22px">/compact 業務ルールのIDと、失敗したテスト名は残して</div>
+    </div>
+    <div class="dbox" style="width:500px">
+      <div class="dkt">見るポイント</div>
+      <ul class="dl ja"><li>何がどれだけ<b>机を使っている</b>か</li><li>subagent 後も main は<b>少ししか増えない</b></li><li>compact で<b>小さくなる</b></li></ul>
+    </div>
+  </div>
+  <div class="demo-foot ja">⏱ 約4分 · DEMO ⑤ のセッションをそのまま使う</div>
+<aside class="notes">
+<div class="nt-cue">DEMO ⑥ 4分 · DEMO ⑤ のセッションを続けて使う (context が溜まっている) → /context → subagent → /context → /compact → /context</div>
+<div class="nt-jp">さっきのセッションを、そのまま使います。もう、かなり作業しました。
+/context で、机の上を見てみます。
+
+（画面を指して）system、ツールの定義、CLAUDE.md、そして会話とツールの結果。ここが一番大きいですね。
+
+次に、subagent に調査をお願いします。……要点だけ返ってきました。
+もう一度 /context。main の机は、少ししか増えていません。
+
+最後に compact。「業務ルールのIDと、失敗したテスト名は残して」と指示します。
+……小さくなりました。これが、さっきのアニメーションの実物です。</div>
+<div class="nt-vi">VN: Dùng tiếp session của DEMO ⑤ (đã có nhiều context). /context xem phân bổ → subagent điều tra → /context lại (main tăng ít) → /compact có chỉ thị → /context (giảm). Nối lại với animation compaction.</div>
+</aside>
+</section>
+
+<section class="slide divider" id="s-break" data-title="休憩" data-part="C. 開発プロセス">
+  <div style="font-size:150px;line-height:1">☕</div>
+  <h1 class="ja">休憩 5分</h1>
+  <div class="q ja">後半: 品質 (Spec first) · Context · まとめ<br><span class="m s24">DEMO ④ ⑤ ⑥ があります</span></div>
+<aside class="notes">
+<div class="nt-cue">休憩 5分 · この間に ./demo/reset.sh d4 · GitHub の Issues 画面を開いておく</div>
+<div class="nt-jp">ここで5分休憩します。○時○分に再開します。
+後半は、品質、コンテキスト、まとめです。デモも3つあります。</div>
+<div class="nt-vi">VN: Nghỉ 5 phút; tranh thủ chuẩn bị reset.sh d4, kiểm tra mạng/quota.</div>
+</aside>
+</section>

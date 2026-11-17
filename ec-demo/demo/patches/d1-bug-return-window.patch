@@ -1,0 +1,14 @@
+diff --git a/src/returns/return-service.js b/src/returns/return-service.js
+index 8785ccb..f71c298 100644
+--- a/src/returns/return-service.js
++++ b/src/returns/return-service.js
+@@ -4,7 +4,8 @@ import { ORDER_STATUS, transition } from '../orders/order-status.js';
+ export const RETURN_WINDOW_DAYS = 8; // BR-09: 受取日から8日以内
+ const DAY_MS = 24 * 60 * 60 * 1000;
+ // 暫定実装: 受取時刻からの経過時間で判定 (タイムゾーンの扱いは TBD-01)
+-const RETURN_WINDOW_MS = RETURN_WINDOW_DAYS * DAY_MS;
++// 受取日当日も含めて数える
++const RETURN_WINDOW_MS = (RETURN_WINDOW_DAYS + 1) * DAY_MS;
+ 
+ const REFUNDABLE = new Set(['unopened', 'defective']); // BR-10
+ const CONDITIONS = new Set(['unopened', 'opened', 'used', 'defective']);
